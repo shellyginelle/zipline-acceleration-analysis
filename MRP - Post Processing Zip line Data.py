@@ -67,7 +67,7 @@ os.path.exists('/Users/shellyginelle/Data/1 - Head/DATA-001.csv')
 #  - Arrival at Brake Mechanism
 # 2. Offloading - Figure out the time it took for you to get back onto the Zip Line of choice
 
-# In[9]:
+# In[77]:
 
 
 #Static Variables
@@ -176,34 +176,75 @@ com_raw_df = pd.read_csv("/Users/shellyginelle/Data/5 - COM Harness/COMBINED_COM
 
 # ### Manipulate Data
 
-# In[19]:
+# In[79]:
 
 
-'''
-head_raw_df
-neck_raw_df
-shoulder_raw_df
-heart_raw_df
-com_raw_df
-'''
+#Manipulate data from Ax, Ay, Az and divide by 2048
+count_g = 2048
 
-head_ax_max = head_raw_df['Ax'].max()
-head_ax_max/2048
+head_raw_df['Ax'] = head_raw_df['Ax'].divide(count_g)
+head_raw_df['Ay'] = head_raw_df['Ay'].divide(count_g)
+head_raw_df['Az'] = head_raw_df['Az'].divide(count_g)
 
-head_ay_max = head_raw_df['Ay'].max()
-head_ay_max/2048
+neck_raw_df['Ax'] = neck_raw_df['Ax'].divide(count_g)
+neck_raw_df['Ay'] = neck_raw_df['Ay'].divide(count_g)
+neck_raw_df['Az'] = neck_raw_df['Az'].divide(count_g)
 
-head_az_max = head_raw_df['Az'].max()
-head_az_max/2048
+shoulder_raw_df['Ax'] = shoulder_raw_df['Ax'].divide(count_g)
+shoulder_raw_df['Ay'] = shoulder_raw_df['Ay'].divide(count_g)
+shoulder_raw_df['Az'] = shoulder_raw_df['Az'].divide(count_g)
 
-head_ax_min = head_raw_df['Ax'].min()
-head_ax_min/2048
+heart_raw_df['Ax'] = heart_raw_df['Ax'].divide(count_g)
+heart_raw_df['Ay'] = heart_raw_df['Ay'].divide(count_g)
+heart_raw_df['Az'] = heart_raw_df['Az'].divide(count_g)
 
-head_ay_min = head_raw_df['Ay'].min()
-head_ay_min/2048
+com_raw_df['Ax'] = com_raw_df['Ax'].divide(count_g)
+com_raw_df['Ay'] = com_raw_df['Ay'].divide(count_g)
+com_raw_df['Az'] = com_raw_df['Az'].divide(count_g)
 
-head_az_min = head_raw_df['Az'].min()
-head_az_min/2048
+
+# In[81]:
+
+
+#Manipulate data from Gx, Gy, Gz and divide by 65.536
+degree_sec = 65.536
+
+head_raw_df['Gx'] = head_raw_df['Gx'].divide(degree_sec)
+head_raw_df['Gy'] = head_raw_df['Gy'].divide(degree_sec)
+head_raw_df['Gz'] = head_raw_df['Gz'].divide(degree_sec)
+
+neck_raw_df['Gx'] = neck_raw_df['Gx'].divide(degree_sec)
+neck_raw_df['Gy'] = neck_raw_df['Gy'].divide(degree_sec)
+neck_raw_df['Gz'] = neck_raw_df['Gz'].divide(degree_sec)
+
+shoulder_raw_df['Gx'] = shoulder_raw_df['Gx'].divide(degree_sec)
+shoulder_raw_df['Gy'] = shoulder_raw_df['Gy'].divide(degree_sec)
+shoulder_raw_df['Gz'] = shoulder_raw_df['Gz'].divide(degree_sec)
+
+heart_raw_df['Gx'] = heart_raw_df['Gx'].divide(degree_sec)
+heart_raw_df['Gy'] = heart_raw_df['Gy'].divide(degree_sec)
+heart_raw_df['Gz'] = heart_raw_df['Gz'].divide(degree_sec)
+
+com_raw_df['Gx'] = com_raw_df['Gx'].divide(degree_sec)
+com_raw_df['Gy'] = com_raw_df['Gy'].divide(degree_sec)
+com_raw_df['Gz'] = com_raw_df['Gz'].divide(degree_sec)
+
+
+# In[83]:
+
+
+head_raw_df.to_csv('/Users/shellyginelle/Data/1 - Head/MANIPULATED_HEAD_DATA.csv')
+neck_raw_df.to_csv('/Users/shellyginelle/Data/2 - Neck C7/MANIPULATED_NECK_DATA.csv')
+shoulder_raw_df.to_csv('/Users/shellyginelle/Data/3 - Left Shoulder/MANIPULATED_SHOULDER_DATA.csv')
+heart_raw_df.to_csv('/Users/shellyginelle/Data/4 - Heart/MANIPULATED_HEART_DATA.csv')
+com_raw_df.to_csv('/Users/shellyginelle/Data/5 - COM Harness/MANIPULATED_COM_DATA.csv')
+
+
+# In[85]:
+
+
+#Debugging
+#head_raw_df['Ax'].max()
 
 
 # ### Filter Data
@@ -328,18 +369,13 @@ com_plot = com_raw_df.plot(title = 'COM Experienced Acceleration',  x = 'Time', 
 com_plot.legend(loc=2, fontsize = 'xx-large')
 
 
-# In[42]:
+# In[47]:
 
 
+#Analyzing by timeframe
 head_run1 = head_raw_df.iloc[74:91]
-head_run1
-
-
-# In[43]:
-
-
-head_run1_plot = head_run1.plot(title = 'Head Experienced Acceleration',  x = 'Time', y = acceleration)
-head_run1_plot.legend(loc=2, fontsize = 'xx-large')
+#head_run1_plot = head_run1.plot(title = 'Head Experienced Acceleration',  x = 'Time', y = acceleration)
+#head_run1_plot.legend(loc=2, fontsize = 'xx-large')
 
 
 # In[7]:
@@ -434,6 +470,7 @@ heart_raw_df
 com_raw_df
 '''
 
+#Acceleration
 head_ax_max = head_raw_df['Ax'].max()
 head_ax_max/2048
 
@@ -451,4 +488,11 @@ head_ay_min/2048
 
 head_az_min = head_raw_df['Az'].min()
 head_az_min/2048
+
+#Gyroscope
+head_gx_min = head_raw_df['Gx'].min()
+head_gx_min/65.536
+
+head_gx_min = head_raw_df['Gx'].max()
+head_gx_min/65.536
 

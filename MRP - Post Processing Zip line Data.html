@@ -11904,7 +11904,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[77]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Static Variables</span>
@@ -12026,57 +12026,99 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="prompt input_prompt">In&nbsp;[79]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">head_raw_df</span>
-<span class="sd">neck_raw_df</span>
-<span class="sd">shoulder_raw_df</span>
-<span class="sd">heart_raw_df</span>
-<span class="sd">com_raw_df</span>
-<span class="sd">&#39;&#39;&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Manipulate data from Ax, Ay, Az and divide by 2048</span>
+<span class="n">count_g</span> <span class="o">=</span> <span class="mi">2048</span>
 
-<span class="n">head_ax_max</span> <span class="o">=</span> <span class="n">head_raw_df</span><span class="p">[</span><span class="s1">&#39;Ax&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-<span class="n">head_ax_max</span><span class="o">/</span><span class="mi">2048</span>
+<span class="n">head_raw_df</span><span class="p">[</span><span class="s1">&#39;Ax&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">head_raw_df</span><span class="p">[</span><span class="s1">&#39;Ax&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">count_g</span><span class="p">)</span>
+<span class="n">head_raw_df</span><span class="p">[</span><span class="s1">&#39;Ay&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">head_raw_df</span><span class="p">[</span><span class="s1">&#39;Ay&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">count_g</span><span class="p">)</span>
+<span class="n">head_raw_df</span><span class="p">[</span><span class="s1">&#39;Az&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">head_raw_df</span><span class="p">[</span><span class="s1">&#39;Az&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">count_g</span><span class="p">)</span>
 
-<span class="n">head_ay_max</span> <span class="o">=</span> <span class="n">head_raw_df</span><span class="p">[</span><span class="s1">&#39;Ay&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-<span class="n">head_ay_max</span><span class="o">/</span><span class="mi">2048</span>
+<span class="n">neck_raw_df</span><span class="p">[</span><span class="s1">&#39;Ax&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">neck_raw_df</span><span class="p">[</span><span class="s1">&#39;Ax&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">count_g</span><span class="p">)</span>
+<span class="n">neck_raw_df</span><span class="p">[</span><span class="s1">&#39;Ay&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">neck_raw_df</span><span class="p">[</span><span class="s1">&#39;Ay&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">count_g</span><span class="p">)</span>
+<span class="n">neck_raw_df</span><span class="p">[</span><span class="s1">&#39;Az&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">neck_raw_df</span><span class="p">[</span><span class="s1">&#39;Az&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">count_g</span><span class="p">)</span>
 
-<span class="n">head_az_max</span> <span class="o">=</span> <span class="n">head_raw_df</span><span class="p">[</span><span class="s1">&#39;Az&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-<span class="n">head_az_max</span><span class="o">/</span><span class="mi">2048</span>
+<span class="n">shoulder_raw_df</span><span class="p">[</span><span class="s1">&#39;Ax&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">shoulder_raw_df</span><span class="p">[</span><span class="s1">&#39;Ax&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">count_g</span><span class="p">)</span>
+<span class="n">shoulder_raw_df</span><span class="p">[</span><span class="s1">&#39;Ay&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">shoulder_raw_df</span><span class="p">[</span><span class="s1">&#39;Ay&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">count_g</span><span class="p">)</span>
+<span class="n">shoulder_raw_df</span><span class="p">[</span><span class="s1">&#39;Az&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">shoulder_raw_df</span><span class="p">[</span><span class="s1">&#39;Az&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">count_g</span><span class="p">)</span>
 
-<span class="n">head_ax_min</span> <span class="o">=</span> <span class="n">head_raw_df</span><span class="p">[</span><span class="s1">&#39;Ax&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
-<span class="n">head_ax_min</span><span class="o">/</span><span class="mi">2048</span>
+<span class="n">heart_raw_df</span><span class="p">[</span><span class="s1">&#39;Ax&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">heart_raw_df</span><span class="p">[</span><span class="s1">&#39;Ax&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">count_g</span><span class="p">)</span>
+<span class="n">heart_raw_df</span><span class="p">[</span><span class="s1">&#39;Ay&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">heart_raw_df</span><span class="p">[</span><span class="s1">&#39;Ay&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">count_g</span><span class="p">)</span>
+<span class="n">heart_raw_df</span><span class="p">[</span><span class="s1">&#39;Az&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">heart_raw_df</span><span class="p">[</span><span class="s1">&#39;Az&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">count_g</span><span class="p">)</span>
 
-<span class="n">head_ay_min</span> <span class="o">=</span> <span class="n">head_raw_df</span><span class="p">[</span><span class="s1">&#39;Ay&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
-<span class="n">head_ay_min</span><span class="o">/</span><span class="mi">2048</span>
-
-<span class="n">head_az_min</span> <span class="o">=</span> <span class="n">head_raw_df</span><span class="p">[</span><span class="s1">&#39;Az&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
-<span class="n">head_az_min</span><span class="o">/</span><span class="mi">2048</span>
+<span class="n">com_raw_df</span><span class="p">[</span><span class="s1">&#39;Ax&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">com_raw_df</span><span class="p">[</span><span class="s1">&#39;Ax&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">count_g</span><span class="p">)</span>
+<span class="n">com_raw_df</span><span class="p">[</span><span class="s1">&#39;Ay&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">com_raw_df</span><span class="p">[</span><span class="s1">&#39;Ay&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">count_g</span><span class="p">)</span>
+<span class="n">com_raw_df</span><span class="p">[</span><span class="s1">&#39;Az&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">com_raw_df</span><span class="p">[</span><span class="s1">&#39;Az&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">count_g</span><span class="p">)</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[81]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Manipulate data from Gx, Gy, Gz and divide by 65.536</span>
+<span class="n">degree_sec</span> <span class="o">=</span> <span class="mf">65.536</span>
 
+<span class="n">head_raw_df</span><span class="p">[</span><span class="s1">&#39;Gx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">head_raw_df</span><span class="p">[</span><span class="s1">&#39;Gx&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">degree_sec</span><span class="p">)</span>
+<span class="n">head_raw_df</span><span class="p">[</span><span class="s1">&#39;Gy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">head_raw_df</span><span class="p">[</span><span class="s1">&#39;Gy&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">degree_sec</span><span class="p">)</span>
+<span class="n">head_raw_df</span><span class="p">[</span><span class="s1">&#39;Gz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">head_raw_df</span><span class="p">[</span><span class="s1">&#39;Gz&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">degree_sec</span><span class="p">)</span>
 
-<div class="output_area">
+<span class="n">neck_raw_df</span><span class="p">[</span><span class="s1">&#39;Gx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">neck_raw_df</span><span class="p">[</span><span class="s1">&#39;Gx&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">degree_sec</span><span class="p">)</span>
+<span class="n">neck_raw_df</span><span class="p">[</span><span class="s1">&#39;Gy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">neck_raw_df</span><span class="p">[</span><span class="s1">&#39;Gy&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">degree_sec</span><span class="p">)</span>
+<span class="n">neck_raw_df</span><span class="p">[</span><span class="s1">&#39;Gz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">neck_raw_df</span><span class="p">[</span><span class="s1">&#39;Gz&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">degree_sec</span><span class="p">)</span>
 
-<div class="prompt output_prompt">Out[19]:</div>
+<span class="n">shoulder_raw_df</span><span class="p">[</span><span class="s1">&#39;Gx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">shoulder_raw_df</span><span class="p">[</span><span class="s1">&#39;Gx&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">degree_sec</span><span class="p">)</span>
+<span class="n">shoulder_raw_df</span><span class="p">[</span><span class="s1">&#39;Gy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">shoulder_raw_df</span><span class="p">[</span><span class="s1">&#39;Gy&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">degree_sec</span><span class="p">)</span>
+<span class="n">shoulder_raw_df</span><span class="p">[</span><span class="s1">&#39;Gz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">shoulder_raw_df</span><span class="p">[</span><span class="s1">&#39;Gz&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">degree_sec</span><span class="p">)</span>
 
+<span class="n">heart_raw_df</span><span class="p">[</span><span class="s1">&#39;Gx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">heart_raw_df</span><span class="p">[</span><span class="s1">&#39;Gx&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">degree_sec</span><span class="p">)</span>
+<span class="n">heart_raw_df</span><span class="p">[</span><span class="s1">&#39;Gy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">heart_raw_df</span><span class="p">[</span><span class="s1">&#39;Gy&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">degree_sec</span><span class="p">)</span>
+<span class="n">heart_raw_df</span><span class="p">[</span><span class="s1">&#39;Gz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">heart_raw_df</span><span class="p">[</span><span class="s1">&#39;Gz&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">degree_sec</span><span class="p">)</span>
 
+<span class="n">com_raw_df</span><span class="p">[</span><span class="s1">&#39;Gx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">com_raw_df</span><span class="p">[</span><span class="s1">&#39;Gx&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">degree_sec</span><span class="p">)</span>
+<span class="n">com_raw_df</span><span class="p">[</span><span class="s1">&#39;Gy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">com_raw_df</span><span class="p">[</span><span class="s1">&#39;Gy&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">degree_sec</span><span class="p">)</span>
+<span class="n">com_raw_df</span><span class="p">[</span><span class="s1">&#39;Gz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">com_raw_df</span><span class="p">[</span><span class="s1">&#39;Gz&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">degree_sec</span><span class="p">)</span>
+</pre></div>
 
-
-<div class="output_text output_subarea output_execute_result">
-<pre>-4.99951171875</pre>
+</div>
+</div>
 </div>
 
 </div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[83]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">head_raw_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;/Users/shellyginelle/Data/1 - Head/MANIPULATED_HEAD_DATA.csv&#39;</span><span class="p">)</span>
+<span class="n">neck_raw_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;/Users/shellyginelle/Data/2 - Neck C7/MANIPULATED_NECK_DATA.csv&#39;</span><span class="p">)</span>
+<span class="n">shoulder_raw_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;/Users/shellyginelle/Data/3 - Left Shoulder/MANIPULATED_SHOULDER_DATA.csv&#39;</span><span class="p">)</span>
+<span class="n">heart_raw_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;/Users/shellyginelle/Data/4 - Heart/MANIPULATED_HEART_DATA.csv&#39;</span><span class="p">)</span>
+<span class="n">com_raw_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;/Users/shellyginelle/Data/5 - COM Harness/MANIPULATED_COM_DATA.csv&#39;</span><span class="p">)</span>
+</pre></div>
 
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[85]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Debugging</span>
+<span class="c1">#head_raw_df[&#39;Ax&#39;].max()</span>
+</pre></div>
+
+</div>
 </div>
 </div>
 
@@ -12311,440 +12353,16 @@ Pandas doesn&#39;t allow columns to be created via a new attribute name - see ht
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[42]:</div>
+<div class="prompt input_prompt">In&nbsp;[47]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">head_run1</span> <span class="o">=</span> <span class="n">head_raw_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">74</span><span class="p">:</span><span class="mi">91</span><span class="p">]</span>
-<span class="n">head_run1</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Analyzing by timeframe</span>
+<span class="n">head_run1</span> <span class="o">=</span> <span class="n">head_raw_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">74</span><span class="p">:</span><span class="mi">91</span><span class="p">]</span>
+<span class="c1">#head_run1_plot = head_run1.plot(title = &#39;Head Experienced Acceleration&#39;,  x = &#39;Time&#39;, y = acceleration)</span>
+<span class="c1">#head_run1_plot.legend(loc=2, fontsize = &#39;xx-large&#39;)</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[42]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Time</th>
-      <th>Ax</th>
-      <th>Ay</th>
-      <th>Az</th>
-      <th>Gx</th>
-      <th>Gy</th>
-      <th>Gz</th>
-      <th>Qw</th>
-      <th>Qx</th>
-      <th>Qy</th>
-      <th>Qz</th>
-      <th>Mx</th>
-      <th>My</th>
-      <th>Mz</th>
-      <th>T</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>81</th>
-      <td>1.597565</td>
-      <td>1882.0</td>
-      <td>-311.0</td>
-      <td>-682.0</td>
-      <td>6.0</td>
-      <td>23.0</td>
-      <td>-19.0</td>
-      <td>13354.115</td>
-      <td>-8003.491</td>
-      <td>4826.392</td>
-      <td>1659.254</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>82</th>
-      <td>1.6175540000000002</td>
-      <td>1894.0</td>
-      <td>-320.0</td>
-      <td>-668.0</td>
-      <td>8.0</td>
-      <td>20.0</td>
-      <td>-18.0</td>
-      <td>13356.565</td>
-      <td>-8003.937</td>
-      <td>4821.460</td>
-      <td>1651.701</td>
-      <td>596.0</td>
-      <td>-370.0</td>
-      <td>-158.0</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>83</th>
-      <td>1.637543</td>
-      <td>1897.0</td>
-      <td>-332.0</td>
-      <td>-656.0</td>
-      <td>6.0</td>
-      <td>24.0</td>
-      <td>-14.0</td>
-      <td>13359.192</td>
-      <td>-8004.150</td>
-      <td>4816.563</td>
-      <td>1643.691</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>84</th>
-      <td>1.657532</td>
-      <td>1873.0</td>
-      <td>-342.0</td>
-      <td>-674.0</td>
-      <td>5.0</td>
-      <td>24.0</td>
-      <td>-16.0</td>
-      <td>13361.728</td>
-      <td>-8004.390</td>
-      <td>4811.792</td>
-      <td>1635.865</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>85</th>
-      <td>1.6775209999999998</td>
-      <td>1896.0</td>
-      <td>-317.0</td>
-      <td>-668.0</td>
-      <td>8.0</td>
-      <td>24.0</td>
-      <td>-14.0</td>
-      <td>13364.049</td>
-      <td>-8004.946</td>
-      <td>4807.044</td>
-      <td>1628.125</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>86</th>
-      <td>1.6975099999999999</td>
-      <td>1893.0</td>
-      <td>-316.0</td>
-      <td>-645.0</td>
-      <td>4.0</td>
-      <td>19.0</td>
-      <td>-17.0</td>
-      <td>13366.582</td>
-      <td>-8005.279</td>
-      <td>4802.176</td>
-      <td>1620.041</td>
-      <td>596.0</td>
-      <td>-370.0</td>
-      <td>-158.0</td>
-      <td>25724.0</td>
-    </tr>
-    <tr>
-      <th>87</th>
-      <td>1.717499</td>
-      <td>1900.0</td>
-      <td>-312.0</td>
-      <td>-665.0</td>
-      <td>8.0</td>
-      <td>28.0</td>
-      <td>-17.0</td>
-      <td>13368.975</td>
-      <td>-8006.117</td>
-      <td>4796.865</td>
-      <td>1611.873</td>
-      <td>607.0</td>
-      <td>-383.0</td>
-      <td>-141.0</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>88</th>
-      <td>1.7374880000000001</td>
-      <td>1896.0</td>
-      <td>-304.0</td>
-      <td>-682.0</td>
-      <td>5.0</td>
-      <td>20.0</td>
-      <td>-20.0</td>
-      <td>13371.307</td>
-      <td>-8006.725</td>
-      <td>4792.029</td>
-      <td>1603.866</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>89</th>
-      <td>1.757508</td>
-      <td>1886.0</td>
-      <td>-314.0</td>
-      <td>-649.0</td>
-      <td>6.0</td>
-      <td>24.0</td>
-      <td>-18.0</td>
-      <td>13373.808</td>
-      <td>-8007.176</td>
-      <td>4787.030</td>
-      <td>1595.669</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>90</th>
-      <td>1.777497</td>
-      <td>1891.0</td>
-      <td>-309.0</td>
-      <td>-667.0</td>
-      <td>9.0</td>
-      <td>24.0</td>
-      <td>-20.0</td>
-      <td>13376.353</td>
-      <td>-8007.404</td>
-      <td>4782.098</td>
-      <td>1587.967</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>91</th>
-      <td>1.7974860000000001</td>
-      <td>1900.0</td>
-      <td>-332.0</td>
-      <td>-651.0</td>
-      <td>1.0</td>
-      <td>18.0</td>
-      <td>-20.0</td>
-      <td>13378.701</td>
-      <td>-8007.857</td>
-      <td>4777.244</td>
-      <td>1580.489</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>92</th>
-      <td>1.817475</td>
-      <td>1896.0</td>
-      <td>-330.0</td>
-      <td>-653.0</td>
-      <td>11.0</td>
-      <td>19.0</td>
-      <td>-11.0</td>
-      <td>13380.985</td>
-      <td>-8008.008</td>
-      <td>4773.193</td>
-      <td>1572.612</td>
-      <td>600.0</td>
-      <td>-371.0</td>
-      <td>-138.0</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>93</th>
-      <td>1.837494</td>
-      <td>1885.0</td>
-      <td>-315.0</td>
-      <td>-641.0</td>
-      <td>9.0</td>
-      <td>16.0</td>
-      <td>-17.0</td>
-      <td>13382.993</td>
-      <td>-8009.375</td>
-      <td>4767.766</td>
-      <td>1565.004</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>94</th>
-      <td>1.8574830000000002</td>
-      <td>1873.0</td>
-      <td>-303.0</td>
-      <td>-654.0</td>
-      <td>7.0</td>
-      <td>20.0</td>
-      <td>-17.0</td>
-      <td>13385.904</td>
-      <td>-8008.952</td>
-      <td>4763.010</td>
-      <td>1556.734</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>95</th>
-      <td>1.877472</td>
-      <td>1836.0</td>
-      <td>-175.0</td>
-      <td>-620.0</td>
-      <td>4.0</td>
-      <td>28.0</td>
-      <td>-20.0</td>
-      <td>13388.528</td>
-      <td>-8007.905</td>
-      <td>4759.285</td>
-      <td>1550.942</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>96</th>
-      <td>1.897461</td>
-      <td>2038.0</td>
-      <td>-531.0</td>
-      <td>-734.0</td>
-      <td>-7.0</td>
-      <td>52.0</td>
-      <td>39.0</td>
-      <td>13391.449</td>
-      <td>-7991.782</td>
-      <td>4779.595</td>
-      <td>1546.414</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>97</th>
-      <td>1.9174810000000002</td>
-      <td>2227.0</td>
-      <td>-684.0</td>
-      <td>-449.0</td>
-      <td>179.0</td>
-      <td>90.0</td>
-      <td>97.0</td>
-      <td>13377.692</td>
-      <td>-7998.016</td>
-      <td>4806.642</td>
-      <td>1549.425</td>
-      <td>601.0</td>
-      <td>-358.0</td>
-      <td>-147.0</td>
-      <td>NaN</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[43]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">head_run1_plot</span> <span class="o">=</span> <span class="n">head_run1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Head Experienced Acceleration&#39;</span><span class="p">,</span>  <span class="n">x</span> <span class="o">=</span> <span class="s1">&#39;Time&#39;</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">acceleration</span><span class="p">)</span>
-<span class="n">head_run1_plot</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="s1">&#39;xx-large&#39;</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/anaconda3/lib/python3.6/site-packages/pandas/plotting/_core.py:1716: UserWarning:
-
-Pandas doesn&#39;t allow columns to be created via a new attribute name - see https://pandas.pydata.org/pandas-docs/stable/indexing.html#attribute-access
-
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[43]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&lt;matplotlib.legend.Legend at 0x1c2dd0b9b0&gt;</pre>
-</div>
-
-</div>
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-
-
-<div class="output_png output_subarea ">
-<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAYIAAAEMCAYAAADJQLEhAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAADl0RVh0U29mdHdhcmUAbWF0cGxvdGxpYiB2ZXJzaW9uIDIuMS4yLCBodHRwOi8vbWF0cGxvdGxpYi5vcmcvNQv5yAAAIABJREFUeJzt3XmcFPWd//HXp6+5GBBwuEEQUdAkXoMmUTcaJUYTHDUxkiUrahJD1Gjyi1l1V1ejG9dN1hxq4kbdZBlRPGI0RIkHRN2YxNVhPYGoKCA4AwyCwNw93d/fH1XdU3MywxzNTL2fj0dNVX3rW12fqp7+fqrq24c55xARkfCK5DoAERHJLSUCEZGQUyIQEQk5JQIRkZBTIhARCTklAhGRkFMikF4xs2fN7Gu5jmNPzGyVmZ2Y6zgyzOx8M3s+13FkmNn1ZrZ4ALf3T2Z290BtT7qmRDDEmNl6MzulTVlOGh2/cUmaWU1g+HCg4wBwzh3mnHs2F9veW2ZW5B+zZbmOpTfM7EQz2xQsc87d5Jzb508gwkKJQPrbA865YYFhv4HcuJnFBnJ7feyLQCPwGTMbn+tgOmIetSODnJ7AEDKzCWb2sJlVm9k6M7sssOwYM/urmX1oZlVmdruZJQLL55jZ38xsp5ndDthexvBJM9tmZpP9+cP9bc7059eb2dVmttrMdpjZr80sP7D+583sFX+dv5jZxwLL1pvZlWb2GlBrZrHglZKZRczsKjN7x8w+MLMHzWyUv2yqmTkzW2Bm7/kx/nPgsaP+bY13zGy3ma0M7MNMM3vazLab2Ztm9qXAeqPNbKmZ7TKzF4Hp3ThMC4D/BF4D5rc5fpPN7Lf+c/iB/1xkln3dzNb48a02s6P88k6f9w6en4/7x/VDM3s1eFvNvx34AzP7M1AHHGhmFwS2+a6ZfcOvWwT8AZgQuCqc0PZWlJmdYd7tuw/9x5/V5vm8wsxe8//vHgj+L0gfcM5pGEIDsB44pU3Z+cDz/nQEWAn8C5AADgTeBU71lx8NfByIAVOBNcC3/WX7A7vwzlTjwHeAZuBrncRyPbC4i1h/APwRKMBr7C5tsx9vAJOBUcCfgX/1lx0FbAWOBaJ4DeZ6IC+w7iv+ugVtjwvwbeAFYBKQB/wSWOIvmwo44C4/rsPxzspn+cu/B7wOHIKXBA8HRgNFwEbgAv/YHQVsAw7z17sfeNCv9xHg/cxz0smxmQKkgUOB7wKvBZZFgVeBn/iPlw8c7y87x3/s2X58BwEHdON5zz5XwETgA+B0f705/nyJv/xZ4D3gMH9f48Dn8JKbAZ/CSxBH+fVPBDZ19r8BHAzU+tuJA/8IrAUSgefuRWAC3v/CGmBhrl9rQ2nIeQAa+vgJ9V40NcCHgaGOlkRwLPBem3WuBn7dyeN9G3jEnz4PeCGwzIBNdJ0ImtrE8kxgedxvnF4HngCszX4sDMyfDrzjT98B3NhmW28Cnwqse2EHxyWTCNYAJweWjQeStCQ/B0wKLH8RmBfYTlkH+3ou8Kc2Zb8ErsNruJPAzMCym+g6EVwDvOJPTwBSwJH+/CeAaiDWwXpPApd3UN7l807rhvlK4J4OHneBP/0scMMe/g8fzcTBnhPBtcCDgWURvGR2YuC5+0pg+Q+B/8z1a20oDYP5/ql07kzn3PLMjJmdD2Q65g7Au0wPdtpGgT/5dQ8GfgyUAoV4jeNKv94EvLNeAJxzzsw20rUHnXNf6WiBcy5pZv8N3Ar8P+e/ygOCj73B335mHxaY2bcCyxOB5W3XbesA4BEzSwfKUsDYwPzmwHQdMMyfngy808ljHtvmuMaAe4ASf7rt/nTlPLyrEpxzlWb2HN6Vz8t+DBucc80drNdVfJ0+7x3UPcfM5gbK4sAzgflWx9fMTsNLegfjNeSFeAm+OyYQOB7OubT/fzUxUKft8xF8rqWXlAjCZyOwzjk3o5Pld+A1Nl92zu02s2/j3QoCqMJraACvozA431NmNhGv8fg1cIuZzXbONQaqBB97ClAZ2IcfOOd+0MXDd/W1uhvxrhj+3EFMU/cQ9ka8WyBvdFD+nHNuTgePGcW7hTYZ+JtfPKWzDZjZJ4EZwNVm9l2/uBg4zMyu8Lc1xcxiHSSDTHwdxd3V89627j3Oua93USd7fM0sD3gYL3n9zk/wj9LSf7SnrziuBD4aeLzM/9X73YhV+oA6i8PnRWCX35la4Hd+fsTMZvvLi/H6AWr8jttvBtZ9HK8xOtu8d+NcBozbmyD8F/t/A/8FfBUvydzYptolZjbJ78j9J+ABv/wuYKGZHWueIjP7nJkVd3Pz/wn8wMwO8GMpMbOybq57N3Cjmc3wt/0xMxsNPAYcbGb/YGZxf5htZrOccyngt8D1ZlZoZofind13ZgHwNF7/wBH+8BG8s+zT8J7DKuBmf9/zzey4QHxXmNnRfnwH+fu5p+c9aDEw18xO9evlm/cW0EmdxJvA62upBpr9q4PPBJZvAUab2YhO1n8Q+JyZnWxmcbw+kUbgL10cI+lDSgQh4zdKc/Eal3V4HZp3A5kX6RXA3wO78RrcBwLrbsPrjLwZr/NwBl4nblfOtdafI6gxszF4SWQscK1/S+gC4AIzOyGw7n3AU3idmu8C/+rHUQF8Hbgd2IHXsXh+Dw7Dz4ClwFNmthuv4/jYbq77Y7yG6ym8hPlfeB3Su/Eav3l4Z7ibgX/HayABLsW7vbQZLwH+uqMH998N8yXgNufc5sCwDu8204LAc3gQXqftJrw+CpxzD+F1wt+H9xw+CozqxvOe5ZzbCJThJd9qvCuE79FJe+Hv+2X+cdmB9/+zNLD8b8AS4F3/XUET2qz/JvAV4DY/rrnAXOdcU0fbk75n7W/LiuSema3H64Revqe6ItI7uiIQEQk5JQIRkZDTrSERkZDTFYGISMgNis8R7L///m7q1Km5DkNEZFBZuXLlNudcyZ7qDYpEMHXqVCoqKnIdhojIoGJme/oEO6BbQyIioadEICISckoEIiIhp0QgIhJySgQiIiGnRCAiEnJKBCIiITcoPkfQXQ0NDVRXV9PQ0EBzc0c/3iR7Eo/HGTNmDMOHD891KCKh99Sqzeyoa+Lc2Z3+jlGfGDKJYOfOnWzZsoWSkhLGjRtHLBbD++0T6S7nHPX19bz/vvfDUEoGIrmxo7aJ63+/it+9UsnRB4zknKMnE4n0X3s2ZBLBtm3bmDRpEoWFhbkOZdAyMwoLC5k4cSKVlZVKBCI58MQbVVzz6Bt8WJfkO6cczMUnTe/XJABDKBE0NTVRUFCQ6zCGhIKCApLJZK7DEAmVD2oauW7pKh57rYrDJgyn/MJjOXTCwJyMDZlEAOhWUB/RcRQZWMter+LaR99gV0OS7845mIUnTiceHbj38gypRCAiMphsq2nkut+t4vHXq/joxBHce86xzBw38LdklQhERAaYc47HXqviuqWrqGlo5nunHsI3/u5AYgN4FRCkRCAiMoCqdzdy7aNv8MSqzRw+aQQ/OudwDh5bnNOYlAhERAaAc46lr1Zy/dJV1DaluOq0mXzt+Gk5uwoIyn0EsleeffZZzIxEIsG2bdtyHY6IdGHr7ga+cc9KLr//FQ4YXcSyy45n4aem7xNJAJQIBq3y8nImTZoEwJIlS3IcjYh0xDnHoy+/z5wf/w/PvlXNP50+k4e/+UkOGpPbW0FtKREMQnV1dfzmN7/hggsu4NRTT6W8vDzXIYlIG1t2NfD18gq+/cArTC8pYtllJ3DR300n2s8fDtsbSgSD0COPPMLu3buZP38+8+fPp6KigtWrV2eXv/POOxQXFzNnzhycc9nyHTt2MGnSJGbNmkV9fX0uQhcZ8pxzPLxyE3N+/Bx/ensb13xuFg8t/CQHjRmW69A61e1EYGaTzewZM1tjZqvM7HK/fJSZPW1mb/vjkX65mdmtZrbWzF4zs6MCj7XAr/+2mS3o+90a2srLyyktLeWQQw6hrKyM4uLiVlcF06dP52c/+xnLly/npz/9abZ84cKFbN26lXvvvVefwhbpB9tqGvl6eQXffehVDh5bzB8uP4GvnXDgPnkVENSTdw01A991zv2fmRUDK83saeB8YIVz7mYzuwq4CrgSOA2Y4Q/HAncAx5rZKOA6oBRw/uMsdc7t6KudCvr+71exunJXfzz0Xjl0wnCum3vYXq9fWVnJ8uXLueWWWwDv6yDOOussFi9ezE033UQk4uX2Cy+8kMcff5yrr76aOXPm8PLLL/Pggw9y0003cdRRR3W1CRHZC8+8uZXvPfQquxqaueZzs7jguGn7fALI6PYVgXOuyjn3f/70bmANMBEoAxb51RYBZ/rTZUC587wA7Gdm44FTgaedc9v9xv9p4LN9sjchsHjxYsyMefPmZcvmz5/P+++/z4oVK1rVvfPOOxk9ejTnnnsul156KSeccAJXXnnlQIcsMqQ1JFNc97s3uODXL7H/sDyWXnrcoLgKCNqrzxGY2VTgSOB/gbHOuSrwkoWZjfGrTQQ2Blbb5Jd1Vt52GxcBFwFMmbL338Xdm7PvfVF5eTmzZ8+moaGB9evXA96toJEjR7Jo0SLmzJmTrTt69GjuuOMOysrKKCoq4p577sleMYhI762u3MXl97/M21truPC4afzjZw8hPx7NdVg91uNEYGbDgIeBbzvndnXxBWUdLXBdlLcucO5O4E6A0tLSdsvDaOXKlaxatQqAadOmtVue6UQuLm55a9qyZcsA751Ga9eu5YADDhiYYEWGsHTa8as/r+OHT7zJiMI45Rcew98dXJLrsPZajxKBmcXxksC9zrnf+sVbzGy8fzUwHtjql28CJgdWnwRU+uUntil/tuehh8+iRYvIy8vjvvvua3dmX1VVxcUXX5x9WynAY489xi9/+Usuv/xynnzySRYsWMDrr7/OyJEjcxG+yJCweWcDVzz0Ks+v3cZnDh3LzV/4GKOKErkOq3ecc90a8M7ky4Gftin/EXCVP30V8EN/+nPAH/z1Pg686JePAtYBI/1hHTCqq20fffTRbk9Wr169xzqDWVNTkyspKXGnn356p3WmTJniTjzxROecc1u3bnVjxoxxRx55pGtsbHQrV6508XjcnXvuud3a3lA/niJ74w+vV7rDv/+km3nNH9yS/93g0ul0rkPqElDhutG+9+SG8XHAPwCfNrNX/OF04GZgjpm9Dczx5wGWAe8Ca4G7gIv9xLMduBF4yR9u8MukC8uWLaO6upqysrJO65xxxhk899xzbNiwga9+9avs2rWLxYsXk0gkOOqoo7j++ut54IEHuPfeewcwcpHBr7axmX/8zassXPx/TBlVyOOXHc+8Y6YMnd/u6E62yPWgKwLnzj77bGdmrrKystM6Tz/9tAPc97//fQe4W2+9tdXyVCrljj/+eDdixAi3YcOGLrc31I+nSHe9/N4O96kf/tFNveox98Mn1rim5lSuQ+o2unlFYM7t+/2wpaWlrqKioss6a9asYdasWX2yvbRzpJ3DpVum086bzhwu5/8NHj7nWnq9HS0zzl8WWAIOohEjGjFi0QixiBHz5wfqLMM5RyrtaE4Hx2mcg3Vr3+Kd5AgiZtk4zYyoGdEIgWnDzN8X8+tEWuqk046mVJqm5jTJlCOZSpNMpWls9sZJv7yljjc0NadpCtRPptIARMw7TpHs8YoQjUAsEvGWRS1bJ9pmiEUsWycRjZAfj5Ifj5AXj5If86a9Mn865k3nxSL98puxzrUc+2QqTSrtaGr2jk1jc4qGZMt0Y3OaxqQ/nQyUNadpTAams8vTpJ1r2e9Im2Ni3rELHq+2ddoer4KEdzwK4lFvOhalIBFpV9bfv687UFJpxy+eWctPV7zNuOH5/PhLh3PsgaNzHVaPmNlK51zpnuoN6a+hTqUdH9Q0ZhvxbIOedtlGPdjIZ6ZzmRwNsi/QTHKIRSPZF6ZX3jIfTBzpTMOe8hr0Zr9xb047UqmW+ZY6LpOW2tlRl+TKpa8P4J574lEjHo1kh7xYhHjUOwaG95ymXEv8KX+f2w7N6TTpPnwaE7EI+bE2icJPIADNmeOdctnpVHA+5T8XbZ6HvpIfj5AX85JWXjxCIuolxlTgfyLtJ550uvU4eBz7Ql4sEkgUmeThlRX4x68wkUkeMQoT/rxf5k3HsnUyywrjMQoSURKx/n8L9MbtdXzngVeo2LCDMw6fwI1nfoQRBfF+326uDOlE4Jxj864GDO9M0syIRLxpb4C4fyYZMYj4Z7fB5ZFIYNrMe++rZd4D69XPMAjMtyzLFJm/cmY+5do30pmGI/PirU+maW5s7vRFahjRqOH8F3NnMmfPsYiRF4tQmAgklEDSiUYi3jHYmc+fr/o06UBD4V1BeI1xJnG2TPvlft1Mwo1GvIY9ETMS0SjxmD8fjZCIRfxlXmMfj/TtmXfmiqdtsmj2z7wbkt5Zd0NzioakdybdkEz584Hlfll2eZv1AIriMT85RwIJ2zue8ahlj0Pr4x3JJvpMUk/EvOSXuRLJy4xjfkMfb5nONP7xaN9cRTr/ecv8/3V0vOr9/a9vSlOfmW9KtUy3K0tT39RSvqM2SUMyRV1TirqmZuqTKZKpniWgWMSySWP0sDwmjyxg8qhCpowqZPKoAiaPLGTSyEIKEnv3fv5HX36fax99A4CfnnsEZx7Z7mNOQ86QTgTRiPGRCSMw2zd/kD2CEY8C3fgASsvZfuukkTnzz9zCyTbovbzdFI0YE/cb3N9HZP5tjSH9T96HvNt9EI0M7Aeikik/qTS1JIiWZNFS7tVpblVeXdPIum21/M/b1TQk060et6S4JUlMHuklikl+ohg/Ir/dbwHsrE9y7aNvsPTVSmZPHcmPv3QEk0cVDuShyJkh/Roxa33GPphFzIj4t01EhpLMbcDh+Xt/68U5R3VNIxu317NpRx0bt9fx3vY6Nm6vZ+WGHTz2WlWrq+pYxJiwX0H2CmL8iAIerNjI5l0NXPGZg/nmiQcNqq+I6K0hnQhEJBzMjDHF+YwpzufoA9p/YDKZSrN5Z4OfHOrYuMNLEu9tr2P5mi1sq2li6uhCHv7mJzli8n452IPcUiIQkSEvHo14t4g6udVT19Q8pN7x1FNKBCISeoWJcDeFuuEsIhJySgQiIiGnRCAiEnJKBCIiIadEICISckoEg9Szzz6LmZFIJNi2bVuuwxGRQUyJYJAqLy9n0qRJACxZsiTH0YjIYKZEMAjV1dVlf5Ly1FNPpby8PNchicggpkQwCGV+pH7+/PnMnz+fiooKVq9enV1+xRVXEIvFqKysbLfu3XffjZmxYsWKgQxZRPZhSgSDUHl5OaWlpRxyyCGUlZVRXFzc6qrgwgsvJJVKdfiTlOXl5UyZMoWTTjppIEMWkX2YEsEgU1lZyfLly5k/fz4ABQUFnHXWWSxevJh02vsa3kMPPZRjjjmGRYsWtVp33bp1PP/885x33nlEInrqRcQz9L9g4w9XweaB/6WtTo37KJx2816vvnjxYsyMefPmZcvmz59PeXk5K1asYM6cOYB3VbBw4UJWrlzJ0UcfDXhXA845FixY0Lt9EJEhRaeFg0x5eTmzZ8+moaGB9evXs379eqZPn87IkSNbXQHMmzePgoKCVmX33HMPxx9/PAcddFAuQheRfdTQvyLoxdn3vmblypWsWrUKgGnTprVbnulELi4uZsSIEZx99tksWbKEW265hRdffJF33nmHq6++eqDDFpF93NBPBEPIokWLyMvL47777mt3j7+qqoqLL744+7ZSgAsuuIB7772Xxx9/nGXLllFYWMiXvvSlXIQuIvswc1384Pm+orS01FVUVHRZZ82aNcyaNWuAIhp4yWSSiRMnMnv2bB5//PEO6xxwwAEceOCBPPPMM4D3830HHnggM2fO5IUXXuDzn/8899xzT7e2N9SPp0gYmNlK51zpnuqpj2CQWLZsGdXV1ZSVlXVa54wzzuC5555jw4YNgPfzfQsWLOCJJ57gww8/5Pzzzx+gaEVkMOl2IjCzX5nZVjN7I1B2vZm9b2av+MPpgWVXm9laM3vTzE4NlH/WL1trZlf13a4MbeXl5ZgZc+fO7bROWVkZzrlWZ/3nn38+ZsaUKVP49Kc/PRChisgg05M+gv8Gbgfafp/BT5xz/xEsMLNDgXnAYcAEYLmZHewv/jkwB9gEvGRmS51zq5EuPfzww3usc8opp9D2Vl8sFsPMOO+88zAL5++xikjXup0InHP/Y2ZTu1m9DLjfOdcIrDOztcAx/rK1zrl3Aczsfr+uEkE/ufvuu3HOZTuQRUTa6ot3DV1qZucBFcB3nXM7gInAC4E6m/wygI1tyo/t6EHN7CLgIoApU6b0QZjhsnTpUt5++21+9KMf8YUvfIEDDzww1yGJyD6qt53FdwDTgSOAKuAWv7yjexCui/L2hc7d6Zwrdc6VlpSU9DLM8Ln44ov553/+Z4477jhuu+22XIcjIvuwXl0ROOe2ZKbN7C7gMX92EzA5UHUSkPkqzM7KpQ9t2rQp1yGIyCDRqysCMxsfmD0LyLyjaCkwz8zyzGwaMAN4EXgJmGFm08wsgdehvLQ3MYiISO90+4rAzJYAJwL7m9km4DrgRDM7Au/2znrgGwDOuVVm9iBeJ3AzcIlzLuU/zqXAk0AU+JVzblWf7Y2IiPRYT9419OUOiv+ri/o/AH7QQfkyYFl3tysiIv1LnywWEQk5JQIRkZBTIhARCTklAhGRkFMiEBEJOSUCEZGQUyIYpJ599lnMjEQiwbZt23IdjogMYkoEg1R5eTmTJk0CYMmSJTmORkQGMyWCQaiuri7728Snnnoq5eVtfyJCRKT7lAgGoUceeYTdu3czf/585s+fT0VFBatXt/ykQ+a2UWfD+vXrcxe8iOxz+uL3CGSAlZeXU1payiGHHMKUKVMoLi6mvLycm2++GYBZs2a1+5H6VCrF9773PWpqaiguLs5F2CKyjxryieDfX/x3/rb9b7kOI2vmqJlcecyVe71+ZWUly5cv55ZbvJ9+KCgo4KyzzmLx4sXcdNNNRCIRxo4dy1e+8pVW61122WVUV1dz//33M3r06F7tg4gMLbo1NMgsXrwYM2PevHnZsvnz5/P++++zYsWKDte56667uO2227jmmms499xzBypUERkkhvwVQW/OvvdF5eXlzJ49m4aGhuy9/unTpzNy5EgWLVrEnDlzWtV/7rnnuOSSSzjzzDO54YYbchCxiOzrhnwiGEpWrlzJqlXezzdMmzat3fJMJ3KmD2DdunV88YtfZObMmdxzzz2YdfRLoSISdkoEg8iiRYvIy8vjvvvuIxJpfVevqqqKiy++OPu20t27dzN37lzMjKVLlzJs2LAcRS0i+zolgkEimUxy//33c/LJJ3P22Wd3WOfmm2+mvLycBQsW8Pd///e89dZbrFixgqlTpw5ssCIyqCgRDBLLli2jurqasrKyTuucccYZ/PznP+fGG2/kscce4/TTT2fDhg1s2LChVb2zzjqLoqKi/g5ZRAYJJYJBory8HDNj7ty5ndYpKyvj9ttv58YbbwS85LFsWftfBV23bp0SgYhkKREMEg8//PAe65xyyik45wYgGhEZSvQ5AhGRkFMiEBEJOSUCEZGQUyIQEQm5bicCM/uVmW01szcCZaPM7Gkze9sfj/TLzcxuNbO1ZvaamR0VWGeBX/9tM1vQt7sjIiI91ZMrgv8GPtum7CpghXNuBrDCnwc4DZjhDxcBd4CXOIDrgGOBY4DrMslDRERyo9uJwDn3P8D2NsVlwCJ/ehFwZqC83HleAPYzs/HAqcDTzrntzrkdwNO0Ty57TW+d7Bs6jiLh0ts+grHOuSoAfzzGL58IbAzU2+SXdVbejpldZGYVZlZRXV29x0ASiQT19fU93wNpp76+nng8nuswRGSA9FdncUdfc+m6KG9f6NydzrlS51xpSUnJHje4//77s2nTJrZv304ymdRZ7V5wzlFXV8f777/PmDFj9ryCiAwJvf1k8RYzG++cq/Jv/Wz1yzcBkwP1JgGVfvmJbcqf7WUMAIwYMYK8vDyqq6v54IMPaG5u7ouHDZ14PM7YsWMZPnx4rkMRkQHS20SwFFgA3OyPfxcov9TM7sfrGN7pJ4sngZsCHcSfAa7uZQxZ+fn5TJ48ec8VRUQkq9uJwMyW4J3N729mm/De/XMz8KCZfRV4DzjHr74MOB1YC9QBFwA457ab2Y3AS369G5xzbTugRURkANlguJdeWlrqKioqch2GiMigYmYrnXOle6qnTxaLiIScEoGISMgpEYiIhJwSgYhIyCkRiIiEnBKBiEjIKRGIiIScEoGISMgpEYiIhJwSgYhIyCkRiIiEnBKBiEjIKRGIiIScEoGISMgpEYiIhJwSgYhIyCkRiIiEnBKBiEjIKRGIiIScEoGISMgpEYiIhJwSgYhIyCkRiIiEnBKBiEjI9UkiMLP1Zva6mb1iZhV+2Sgze9rM3vbHI/1yM7NbzWytmb1mZkf1RQwiIrJ3+vKK4CTn3BHOuVJ//ipghXNuBrDCnwc4DZjhDxcBd/RhDCIi0kP9eWuoDFjkTy8CzgyUlzvPC8B+Zja+H+MQEZEu9FUicMBTZrbSzC7yy8Y656oA/PEYv3wisDGw7ia/TEREciDWR49znHOu0szGAE+b2d+6qGsdlLl2lbyEchHAlClT+iZKERFpp0+uCJxzlf54K/AIcAywJXPLxx9v9atvAiYHVp8EVHbwmHc650qdc6UlJSV9EaaIiHSg14nAzIrMrDgzDXwGeANYCizwqy0AfudPLwXO89899HFgZ+YWkoiIDLy+uDU0FnjEzDKPd59z7gkzewl40My+CrwHnOPXXwacDqwF6oAL+iAGERHZS71OBM65d4HDOyj/ADi5g3IHXNLb7YqISN/QJ4tFREJOiUBEJOSUCEREQk6JQEQk5JQIRERCTolARCTklAhEREJOiUBEJOSUCEREQk6JQEQk5JQIRERCTolARCTklAhEREJOiUBEJOSUCEREQk6JQEQk5JQIRERCTolARCTklAhEREJOiUBEJOSUCEREQk6JQEQk5JQIRERCTolARCTklAhEREIuZ4nAzD5rZm+a2VozuypXcYiIhF1OEoGZRYGfA6cBhwJfNrNDcxGLiEjY5erWjVFXAAAPfUlEQVSK4BhgrXPuXedcE3A/UJajWEREQi1XiWAisDEwv8kvyzKzi8yswswqqqurBzQ4EZEwyVUisA7KXKsZ5+50zpU650pLSkoGKCwRkfDJVSLYBEwOzE8CKnMUi4hIqOUqEbwEzDCzaWaWAOYBS3MUi4hIqMVysVHnXLOZXQo8CUSBXznnVuUiFhGRsMtJIgBwzi0DluVq+yIi4tEni0VEQk6JQEQk5JQIRERCTolARCTklAhERJpqIVmf6yhyRolARMJrxwZ44mr4j4PhrpOhsSbXEeWEEoGIhM+mlfDQ+XDrEfDinTDtU1C9Bn53MTi3x9WHmpx9jkBEZEClU/DmH+Cvt8N7f4W8EfDJb8Ex34ARE+HPt8LT18LzP4ET/l+uox1QSgQiMrQ11cIr98ELv4Dt78J+U+CzN8ORX4G84pZ6n/wWVL0KK26AcR+DGafkLuYBpkQgIkPT7s3ebZ+KX0H9DphYCuf8C8ycC9EOmj4zOOM2qH4THr4Qvv4MjJ4+8HHngBKBiAwtW1Z7t39efwhSSZj5Oe9sf/KxXmPflUQhzFsMd54I98+Hry2HvGEDEnYuKRGIyODnHLzzRy8BvPNHiBfCUQvg49/s+Vn9yKnwxV/D4rO9zuNzFu05gQxySgQiMng1N8Lrv4G//hy2roJhY+HT10LphVA4au8fd/pJcMr3Q9N5PLQTQToN9dshlgexfIjEhnxmH7Kcg1ST98JPNUFzQ2A6WNYEqcY9lDVCJAqxAojne/8b8YLuj6OJ7v8fpdOQTkK62btNkU558ym/LDNk5hNFULg/FOznxRgG6TQ010NTHSRr/bE/dFpWB4274a0noWYzjDkUyn4BH/2i93rvCyHqPB7aiaB+B/wocFloEe/FHMvzGoFMgtjTONNYxPK8S854AcSLvPuJcX9IFLYviyVyt+9daaqD2q1Quw1qtkJtdct8bbXXUGY4B7jOx3uq45zXwLlUoOFLtylLtyzrrMyl+27/owmvQXapvXwAa50YoH1Dn5lnL9+TbhEoGOklhcLRUDTaGxfuD0V+WeHowPT+3v/pQEinvca5scZrjJt2e+PsfA007vLmm/yyzNBU472LJ9jAN+/FJ3ozr7Hxh8OZv4Dpn+77k7wQdR6bGwQfnigtLXUVFRU9XzHztrFkvde4NTe0nEl2Oq7vuDxZT49f1JFYIDm0SR6JokCSKejlON97kbVt1LPz/lDjlydrO443b7jXsMTyyf6stJk3bfhj62DcxTKLeme2kah/RRaYzo5jXsPXaZlfHo1DNM9LyNGEn5wTflmiZVksr31ZNNEyzsScSvr/Gw29GDd4jxXNxBlvibWz+VZ1Y4H5mPc/W/eB9zzVfQB126D2g5bpug86T4qJYd7tkEzyyJwZu3SbwbWfp21Zm3rNDa0b+u68FizqvT0zMySGeR2viWHe/3+8oOW10OqEqquyAu//PjKAn4Xdsd7rPB42btB1HpvZSudc6R7rDelE0Jec8xuOzCVqvf/9JHUt41ZlwUvZjsr8M6FkQ+txX7Ko17AXlfjjMd70sBK/bExgecnAnVHK3kunoeHDDpLFNqjbHpjeBqlmPxmbl1QtgpegI20Gaz1uV8e8pJs3zDtZSAzzG/dhkChumc429sO9+Vj+0LkV+84zXufxrLmDqvO4u4lgaN8a6ktm3hlmLOHdv+0PzrVclbRNEK3Gbc9MG70XYdH+MGxMSyNfMHJgz5yk/0Ui/ln/KNh/Rq6jCY/pJ8GcG+Cpa+D5H8MJ3811RH1KiWBfYuadlcfzoSDXwYhIK5+4FCpfgRU3+p3Hc3IdUZ/R6aKISHdkOo/HfgQe/ip88E6uI+ozSgQiIt2V+eSxRbxPHjfuznVEfUKJQESkJzKfPN72Jjw6NL62WolARKSnMp3Ha5bCn27pt82k0imSqWS/PX6GEoGIyN74xKXw0XPgj/8Kbz3V5w+fSqe49s/XcsVzV5BK7+2HH7unV4nAzK43s/fN7BV/OD2w7GozW2tmb5rZqYHyz/pla83sqt5sX0QkZ8xg7q0w7iPw8Nf6tPM4kwR+/+7vmTV6FtF+/rqRvrgi+Ilz7gh/WAZgZocC84DDgM8CvzCzqJlFgZ8DpwGHAl/264qIDD6JQjj3Xu/zHX3UeRxMApcccQkLD1/YB4F2rb9uDZUB9zvnGp1z64C1wDH+sNY5965zrgm4368rIjI4jTygzzqPc5EEoG8SwaVm9pqZ/crMRvplE4GNgTqb/LLOytsxs4vMrMLMKqqrq/sgTBGRftIHnce5SgLQjURgZsvN7I0OhjLgDmA6cARQBWSOQEdfxOG6KG9f6NydzrlS51xpSUlJt3ZGRCRngp3Ha37fo1VzmQSgG18x4Zzr1pdwm9ldwGP+7CZgcmDxJKDSn+6sXERk8Mp0Hle/CQ98BQ75HJz8LzBmZper5ToJQO/fNTQ+MHsW8IY/vRSYZ2Z5ZjYNmAG8CLwEzDCzaWaWwOtQXtqbGERE9hmJQrjwCe9X0tb/Ce74BPzuEti5qcPq+0ISgN5/6dwPzewIvNs764FvADjnVpnZg8BqoBm4xDnvV0DM7FLgSSAK/Mo5t6qXMYiI7DsSRfB3V8DRF3jfVPrinfDaQ3DsN+D472R/QnNfSQKg3yMQEelfH74Hz/wbvLoE8ofD8d8hVfo1rn3p3/o9CeiHaURE9iVbVsHy75N6+0muHT+J3+dHuORj32ThkRf32yb1wzQiIl2ob66nqraKzTWbqaqtoqSwhOMmHNd/n+IdexipLy/h2qcW8vstL3DJjg9Z+OdfQ/5kmPn5nP7qmRKBiAwI5xzJdBIzIx6J9/u2djTuoKq2iqqaKqpqq6isqWRz7WYqa73x9obt7dYbWziWL8z4AmfNOItxReP6NKZsn8CWF7zbQYlJsOIG7x1Gk2bDKdfD1OP7dJvdpVtDOeCcoyndRDwSJ2KD83v/GlON7GjYkR22N25vmW/0xh82fkg8EmdE3ghGJEZ447wRDE8Mz04HyxPRRK53a4+SqSRb6rZ4Z5K1m9lStwWA4ngxw/OGU5wozg7DE958XjSv/+JJJ6ltqmV3cje1yVp2N3njmmQNqXQKM8MwIhYhYhEMw8yfJ9JqebAco1WdZDpJfXN9dmhobmg3X9dct8c6Ke89I8QjcQpiBRTGCymMFe5xuiBW4M3HvXFmui5Z16qxDzb4DamGVseqIFbA+KLxjB82nvFF45lQNIFxReOYMMwbr/lgDb956zf8pfIvmBknTDyBcw4+h+MnHt/rq4ROO4ZTzfDqfV4fwu5KmPEZOPk67/uL+oD6CHrJOUdjqpHaZC11yTrqmuuoTda2+sduO7T9x+/oBdLQ3EBDqoG0SxOxCMPiw1o1Gm0bkc6mhyeGUxArwLpxOZl2aZrTzTSnm0mmkyTTyex0sDwz3tW4K9uYBxv24HRdc12H24pYhP3y9mNU/ihG5I2gOd3Mzsad7Graxc7GndmGoCMFsYIOk8TwvOGMSIxodXwyxy0z7u6x6Ipzju0N29lcu5nNtZuzDUtwflv9NlzHn4HsVF40r1XsxYlihseHt0scxYli0uk0Ncmado16TZNf5jf4NU011CRraEw19mqfeytmMQpiBRTECsiP5WenO5rPDA6XfU3VN9e3m65vrvfmk964q/+ZoNH5o1s39H4DP6FoAuOLxjMib0S3/kc27d7Eb9/+LY+sfYRt9dt6fZXQrXcHJevhf3/pvcuoYRd87Fw46Z+8r6/oBSUCvLPWv1b+lbpkHbXNfoOe9Br0TMNe19y+rKf/gNByhpMfy8+eyXT14siP5tOYamRX0y52N+3ODsH5zhrbjKhFs42hmXXauPdkP9oqiBWwX95+jMwf6Q153nhU/qiW8kBZcaK406sc5xy1yVp2Nu1kZ6M/NO1kV+OuVvOZ6Uzy+LDxQ5Lprr+TPWpRhiWGMSw+jOGJ4dnpYLLITA9LDKOmqSbb0G+pbTnDb0o3tXrcvGge44vGM65oHOOKxrWbHls4lohFOnz+OptuO9/smjvcp4hFKIoXURwvpihR5MXuD0UJvzxelN3XzL4Niw+jKF5ELBLD4XDOkXZp0qRxzp/3pzPlOFrXwV/mD5n/7+D/cWGskHi0/2/xNKWbsq/JYKKoS9aRH8tnwrAJjC0cS34sv0+3nUwneW7jc726SujxW0Trd8DzP/GSgkvD7K/BCVdA0ei92gclAmB7w3Y+9cCn2pVnLjML44UUxYvaTRfFiyiIFVAUL/LK4oUUxYqyl6UdNeyxSN93tyTTSWqaarpsWDJj8JJRLBLrcByPxolZrHV5B2WxSIzhecOzjXtBrKDP96unnHPUN9dTk2w5Fpmz5F1Nuzqc3t20m93J3d6Zs3/23PZM3jBKCkuyjXvbRn580Xj2y9uv11ca3dm3zHMZjUSzjXpfXOVI39ibq4RefU5g5/vw7L/BK/fC/gfDxS/sVWeyEgHeE/G37X/L3m/MNPD9/d3esu9Ju3T2lsqupl0UJ4opKSzp905LGVoyVwkPvfUQf6n8CxGLdHiV0GcfFqt+E3ZVel9qtxeUCERE+lFnVwllB5Vx+8u37xufGFYiEBHpf22vEjJynQRAHygTERkQ8UicUw44hVMOOIVNuzfxyNpHKCkoYd7MebkOrduUCERE+sik4kl868hv5TqMHhucn2YSEZE+o0QgIhJySgQiIiGnRCAiEnJKBCIiIadEICISckoEIiIhp0QgIhJyg+IrJsysGtjQi4fYH9jWR+H0JcXVM4qrZxRXzwzFuA5wzpXsqdKgSAS9ZWYV3fm+jYGmuHpGcfWM4uqZMMelW0MiIiGnRCAiEnJhSQR35jqATiiunlFcPaO4eia0cYWij0BERDoXlisCERHphBKBiEjIKRGIiIScEoGISMgpEYiIhJwSgYhIyOnH60UCzGw0sMKfHQekgGp/vs4598mcBCbSj/Q5ApFOmNn1QI1z7j9yHYtIf9KtIZFuMrMaf3yimT1nZg+a2VtmdrOZzTezF83sdTOb7tcrMbOHzewlfzgut3sg0jElApG9czhwOfBR4B+Ag51zxwB3A9/y6/wM+IlzbjbwBX+ZyD5HfQQie+cl51wVgJm9Azzll78OnORPnwIcamaZdYabWbFzbveARiqyB0oEInunMTCdDsynaXldRYBPOOfqBzIwkZ7SrSGR/vMUcGlmxsyOyGEsIp1SIhDpP5cBpWb2mpmtBhbmOiCRjujtoyIiIacrAhGRkFMiEBEJOSUCEZGQUyIQEQk5JQIRkZBTIhARCTklAhGRkPv/qOBHO0spvY0AAAAASUVORK5CYII=
-"
->
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -12961,6 +12579,7 @@ Pandas doesn&#39;t allow columns to be created via a new attribute name - see ht
 <span class="sd">com_raw_df</span>
 <span class="sd">&#39;&#39;&#39;</span>
 
+<span class="c1">#Acceleration</span>
 <span class="n">head_ax_max</span> <span class="o">=</span> <span class="n">head_raw_df</span><span class="p">[</span><span class="s1">&#39;Ax&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 <span class="n">head_ax_max</span><span class="o">/</span><span class="mi">2048</span>
 
@@ -12978,6 +12597,13 @@ Pandas doesn&#39;t allow columns to be created via a new attribute name - see ht
 
 <span class="n">head_az_min</span> <span class="o">=</span> <span class="n">head_raw_df</span><span class="p">[</span><span class="s1">&#39;Az&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
 <span class="n">head_az_min</span><span class="o">/</span><span class="mi">2048</span>
+
+<span class="c1">#Gyroscope</span>
+<span class="n">head_gx_min</span> <span class="o">=</span> <span class="n">head_raw_df</span><span class="p">[</span><span class="s1">&#39;Gx&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+<span class="n">head_gx_min</span><span class="o">/</span><span class="mf">65.536</span>
+
+<span class="n">head_gx_min</span> <span class="o">=</span> <span class="n">head_raw_df</span><span class="p">[</span><span class="s1">&#39;Gx&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+<span class="n">head_gx_min</span><span class="o">/</span><span class="mf">65.536</span>
 </pre></div>
 
 </div>
