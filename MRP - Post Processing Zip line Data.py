@@ -53,9 +53,8 @@ from math import pi
 # In[3]:
 
 
-'''
-Check is file path exists. In the following code, you will need to substitute the correspoding file path. 
-'''
+#For debugging purposes
+#Check is file path exists. In the following code, you will need to substitute the correspoding file path. 
 
 os.path.exists('/Users/shellyginelle/Data/1 - Head/DATA-001.csv')
 
@@ -67,7 +66,7 @@ os.path.exists('/Users/shellyginelle/Data/1 - Head/DATA-001.csv')
 #  - Arrival at Brake Mechanism
 # 2. Offloading - Figure out the time it took for you to get back onto the Zip Line of choice
 
-# In[77]:
+# In[13]:
 
 
 #Static Variables
@@ -176,58 +175,30 @@ com_raw_df = pd.read_csv("/Users/shellyginelle/Data/5 - COM Harness/COMBINED_COM
 
 # ### Manipulate Data
 
-# In[79]:
+# In[14]:
 
 
-#Manipulate data from Ax, Ay, Az and divide by 2048
+#Divide columns Ax, Ay, Az by 2048
+#Divide Gx, Gy, Gz by 65.536
+acceleration_cols = ['Ax', 'Ay', 'Az']
+gyroscope_cols = ['Gx', 'Gy', 'Gz']
 count_g = 2048
-
-head_raw_df['Ax'] = head_raw_df['Ax'].divide(count_g)
-head_raw_df['Ay'] = head_raw_df['Ay'].divide(count_g)
-head_raw_df['Az'] = head_raw_df['Az'].divide(count_g)
-
-neck_raw_df['Ax'] = neck_raw_df['Ax'].divide(count_g)
-neck_raw_df['Ay'] = neck_raw_df['Ay'].divide(count_g)
-neck_raw_df['Az'] = neck_raw_df['Az'].divide(count_g)
-
-shoulder_raw_df['Ax'] = shoulder_raw_df['Ax'].divide(count_g)
-shoulder_raw_df['Ay'] = shoulder_raw_df['Ay'].divide(count_g)
-shoulder_raw_df['Az'] = shoulder_raw_df['Az'].divide(count_g)
-
-heart_raw_df['Ax'] = heart_raw_df['Ax'].divide(count_g)
-heart_raw_df['Ay'] = heart_raw_df['Ay'].divide(count_g)
-heart_raw_df['Az'] = heart_raw_df['Az'].divide(count_g)
-
-com_raw_df['Ax'] = com_raw_df['Ax'].divide(count_g)
-com_raw_df['Ay'] = com_raw_df['Ay'].divide(count_g)
-com_raw_df['Az'] = com_raw_df['Az'].divide(count_g)
-
-
-# In[81]:
-
-
-#Manipulate data from Gx, Gy, Gz and divide by 65.536
 degree_sec = 65.536
 
-head_raw_df['Gx'] = head_raw_df['Gx'].divide(degree_sec)
-head_raw_df['Gy'] = head_raw_df['Gy'].divide(degree_sec)
-head_raw_df['Gz'] = head_raw_df['Gz'].divide(degree_sec)
 
-neck_raw_df['Gx'] = neck_raw_df['Gx'].divide(degree_sec)
-neck_raw_df['Gy'] = neck_raw_df['Gy'].divide(degree_sec)
-neck_raw_df['Gz'] = neck_raw_df['Gz'].divide(degree_sec)
+for a_cols in acceleration_cols:
+    head_raw_df[a_cols] = head_raw_df[a_cols].divide(count_g)
+    neck_raw_df[a_cols] = neck_raw_df[a_cols].divide(count_g)
+    shoulder_raw_df[a_cols] = shoulder_raw_df[a_cols].divide(count_g)
+    heart_raw_df[a_cols] = heart_raw_df[a_cols].divide(count_g)
+    com_raw_df[a_cols] = com_raw_df[a_cols].divide(count_g)   
 
-shoulder_raw_df['Gx'] = shoulder_raw_df['Gx'].divide(degree_sec)
-shoulder_raw_df['Gy'] = shoulder_raw_df['Gy'].divide(degree_sec)
-shoulder_raw_df['Gz'] = shoulder_raw_df['Gz'].divide(degree_sec)
-
-heart_raw_df['Gx'] = heart_raw_df['Gx'].divide(degree_sec)
-heart_raw_df['Gy'] = heart_raw_df['Gy'].divide(degree_sec)
-heart_raw_df['Gz'] = heart_raw_df['Gz'].divide(degree_sec)
-
-com_raw_df['Gx'] = com_raw_df['Gx'].divide(degree_sec)
-com_raw_df['Gy'] = com_raw_df['Gy'].divide(degree_sec)
-com_raw_df['Gz'] = com_raw_df['Gz'].divide(degree_sec)
+for g_cols in gyroscope_cols:
+    head_raw_df[g_cols] = head_raw_df[g_cols].divide(degree_sec)
+    neck_raw_df[g_cols] = neck_raw_df[g_cols].divide(degree_sec)
+    shoulder_raw_df[g_cols] = shoulder_raw_df[g_cols].divide(degree_sec)
+    heart_raw_df[g_cols] = heart_raw_df[g_cols].divide(degree_sec)
+    com_raw_df[g_cols] = com_raw_df[g_cols].divide(degree_sec)
 
 
 # In[83]:
@@ -240,16 +211,16 @@ heart_raw_df.to_csv('/Users/shellyginelle/Data/4 - Heart/MANIPULATED_HEART_DATA.
 com_raw_df.to_csv('/Users/shellyginelle/Data/5 - COM Harness/MANIPULATED_COM_DATA.csv')
 
 
-# In[85]:
+# In[18]:
 
 
-#Debugging
+#For debugging purposes
 #head_raw_df['Ax'].max()
 
 
 # ### Filter Data
 
-# In[5]:
+# In[20]:
 
 
 #TODO
@@ -336,44 +307,46 @@ bb, ab = ifd.iirdesign(Wip, Wis, Rp, As, ftype='cheby2')
 # In[9]:
 
 
-acceleration = ['Ax', 'Ay', 'Az']
+#For your reference, acceleration_cols = ['Ax', 'Ay', 'Az']
 
 '''
 1. Plot HEAD data
 '''
-head_plot = head_raw_df.plot(title = 'Head Experienced Acceleration',  x = 'Time', y = acceleration)
+head_plot = head_raw_df.plot(title = 'Head Experienced Acceleration',  x = 'Time', y = acceleration_cols)
 head_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 2. Plot NECK data
 '''
-neck_plot = neck_raw_df.plot(title = 'Neck Experienced Acceleration',  x = 'Time', y = acceleration)
+neck_plot = neck_raw_df.plot(title = 'Neck Experienced Acceleration',  x = 'Time', y = acceleration_cols)
 neck_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 3. Plot SHOULDER data
 '''
-shoulder_plot = shoulder_raw_df.plot(title = 'Shoulder Experienced Acceleration',  x = 'Time', y = acceleration)
+shoulder_plot = shoulder_raw_df.plot(title = 'Shoulder Experienced Acceleration',  x = 'Time', y = acceleration_cols)
 shoulder_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 4. Plot HEART data
 '''
-heart_plot = heart_raw_df.plot(title = 'Heart Experienced Acceleration',  x = 'Time', y = acceleration)
+heart_plot = heart_raw_df.plot(title = 'Heart Experienced Acceleration',  x = 'Time', y = acceleration_cols)
 heart_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 5. Plot COM data
 '''
-com_plot = com_raw_df.plot(title = 'COM Experienced Acceleration',  x = 'Time', y = acceleration)
+com_plot = com_raw_df.plot(title = 'COM Experienced Acceleration',  x = 'Time', y = acceleration_cols)
 com_plot.legend(loc=2, fontsize = 'xx-large')
 
 
 # In[47]:
 
 
-#Analyzing by timeframe
-head_run1 = head_raw_df.iloc[74:91]
+#For debugging purposes
+#Analyzing by chunks along the timeframe
+
+#head_run1 = head_raw_df.iloc[74:91]
 #head_run1_plot = head_run1.plot(title = 'Head Experienced Acceleration',  x = 'Time', y = acceleration)
 #head_run1_plot.legend(loc=2, fontsize = 'xx-large')
 
@@ -381,72 +354,72 @@ head_run1 = head_raw_df.iloc[74:91]
 # In[7]:
 
 
-gyroscope = ['Gx', 'Gy', 'Gz']
+#For your reference, gyroscope_cols = ['Gx', 'Gy', 'Gz']
 
 '''
 1. Plot HEAD data
 '''
-head_plot = head_raw_df.plot(title = 'Head Experienced Gyroscope',  x = 'Time', y = gyroscope)
+head_plot = head_raw_df.plot(title = 'Head Experienced Gyroscope',  x = 'Time', y = gyroscope_cols)
 head_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 2. Plot NECK data
 '''
-neck_plot = neck_raw_df.plot(title = 'Neck Experienced Gyroscope',  x = 'Time', y = gyroscope)
+neck_plot = neck_raw_df.plot(title = 'Neck Experienced Gyroscope',  x = 'Time', y = gyroscope_cols)
 neck_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 3. Plot SHOULDER data
 '''
-shoulder_plot = shoulder_raw_df.plot(title = 'Shoulder Experienced Gyroscope',  x = 'Time', y = gyroscope)
+shoulder_plot = shoulder_raw_df.plot(title = 'Shoulder Experienced Gyroscope',  x = 'Time', y = gyroscope_cols)
 shoulder_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 4. Plot HEART data
 '''
-heart_plot = heart_raw_df.plot(title = 'Heart Experienced Gyroscope',  x = 'Time', y = gyroscope)
+heart_plot = heart_raw_df.plot(title = 'Heart Experienced Gyroscope',  x = 'Time', y = gyroscope_cols)
 heart_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 5. Plot COM data
 '''
-com_plot = com_raw_df.plot(title = 'COM Experienced Gyroscope',  x = 'Time', y = gyroscope)
+com_plot = com_raw_df.plot(title = 'COM Experienced Gyroscope',  x = 'Time', y = gyroscope_cols)
 com_plot.legend(loc=2, fontsize = 'xx-large')
 
 
 # In[8]:
 
 
-quarternion = ['Qw', 'Qx', 'Qy', 'Qz']
+quarternion_cols = ['Qw', 'Qx', 'Qy', 'Qz']
 
 '''
 1. Plot HEAD data
 '''
-head_plot = head_raw_df.plot(title = 'Head Experienced Quarternion',  x = 'Time', y = quarternion)
+head_plot = head_raw_df.plot(title = 'Head Experienced Quarternion',  x = 'Time', y = quarternion_cols)
 head_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 2. Plot NECK data
 '''
-neck_plot = neck_raw_df.plot(title = 'Neck Experienced Quarternion',  x = 'Time', y = quarternion)
+neck_plot = neck_raw_df.plot(title = 'Neck Experienced Quarternion',  x = 'Time', y = quarternion_cols)
 neck_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 3. Plot SHOULDER data
 '''
-shoulder_plot = shoulder_raw_df.plot(title = 'Shoulder Experienced Quarternion',  x = 'Time', y = quarternion)
+shoulder_plot = shoulder_raw_df.plot(title = 'Shoulder Experienced Quarternion',  x = 'Time', y = quarternion_cols)
 shoulder_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 4. Plot HEART data
 '''
-heart_plot = heart_raw_df.plot(title = 'Heart Experienced Quarternion',  x = 'Time', y = quarternion)
+heart_plot = heart_raw_df.plot(title = 'Heart Experienced Quarternion',  x = 'Time', y = quarternion_cols)
 heart_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 5. Plot COM data
 '''
-com_plot = com_raw_df.plot(title = 'COM Experienced Quarternion',  x = 'Time', y = quarternion)
+com_plot = com_raw_df.plot(title = 'COM Experienced Quarternion',  x = 'Time', y = quarternion_cols)
 com_plot.legend(loc=2, fontsize = 'xx-large')
 
 
