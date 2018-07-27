@@ -33,7 +33,7 @@
 
 # ### Import Libraries
 
-# In[2]:
+# In[6]:
 
 
 #Imports
@@ -41,16 +41,17 @@ import pandas as pd
 import numpy as np
 import glob, os
 
-#Used for plotting graphs
+#For filtering and plotting graphs
 import matplotlib.pyplot as plt
 import plotly.plotly as py
 import plotly.graph_objs as go
+from scipy.signal import butter, lfilter, freqz
 
 #Create random data with numpy
 from math import pi
 
 
-# In[3]:
+# In[7]:
 
 
 #For debugging purposes
@@ -66,7 +67,7 @@ os.path.exists('/Users/shellyginelle/Data/1 - Head/DATA-001.csv')
 #  - Arrival at Brake Mechanism
 # 2. Offloading - Figure out the time it took for you to get back onto the Zip Line of choice
 
-# In[13]:
+# In[19]:
 
 
 #Static Variables
@@ -175,7 +176,7 @@ com_raw_df = pd.read_csv("/Users/shellyginelle/Data/5 - COM Harness/COMBINED_COM
 
 # ### Manipulate Data
 
-# In[14]:
+# In[20]:
 
 
 #Divide columns Ax, Ay, Az by 2048
@@ -184,7 +185,6 @@ acceleration_cols = ['Ax', 'Ay', 'Az']
 gyroscope_cols = ['Gx', 'Gy', 'Gz']
 count_g = 2048
 degree_sec = 65.536
-
 
 for a_cols in acceleration_cols:
     head_raw_df[a_cols] = head_raw_df[a_cols].divide(count_g)
@@ -201,36 +201,42 @@ for g_cols in gyroscope_cols:
     com_raw_df[g_cols] = com_raw_df[g_cols].divide(degree_sec)
 
 
-# In[83]:
+# In[21]:
 
 
+#Save dataframe into new .csv
 head_raw_df.to_csv('/Users/shellyginelle/Data/1 - Head/MANIPULATED_HEAD_DATA.csv')
+head_mnptd_df = pd.read_csv('/Users/shellyginelle/Data/1 - Head/MANIPULATED_HEAD_DATA.csv', 
+                 skiprows=[0,1,2,3,4,5,6,7], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+
 neck_raw_df.to_csv('/Users/shellyginelle/Data/2 - Neck C7/MANIPULATED_NECK_DATA.csv')
+neck_mnptd_df = pd.read_csv('/Users/shellyginelle/Data/2 - Neck C7/MANIPULATED_NECK_DATA.csv', 
+                 skiprows=[0,1,2,3,4,5,6,7], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+
 shoulder_raw_df.to_csv('/Users/shellyginelle/Data/3 - Left Shoulder/MANIPULATED_SHOULDER_DATA.csv')
+shoulder_mnptd_df = pd.read_csv('/Users/shellyginelle/Data/3 - Left Shoulder/MANIPULATED_SHOULDER_DATA.csv', 
+                 skiprows=[0,1,2,3,4,5,6,7], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+
 heart_raw_df.to_csv('/Users/shellyginelle/Data/4 - Heart/MANIPULATED_HEART_DATA.csv')
+heart_mnptd_df = pd.read_csv('/Users/shellyginelle/Data/4 - Heart/MANIPULATED_HEART_DATA.csv', 
+                 skiprows=[0,1,2,3,4,5,6,7], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+
 com_raw_df.to_csv('/Users/shellyginelle/Data/5 - COM Harness/MANIPULATED_COM_DATA.csv')
+com_mnptd_df = pd.read_csv('/Users/shellyginelle/Data/5 - COM Harness/MANIPULATED_COM_DATA.csv', 
+                 skiprows=[0,1,2,3,4,5,6,7], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
 
-# In[18]:
+# In[23]:
 
 
-#For debugging purposes
-#head_raw_df['Ax'].max()
+#For debugging purposes - Checkpoint
+#head_mnptd_df['Ax'].max()
 
 
 # ### Filter Data
 
-# In[20]:
+# In[24]:
 
-
-#TODO
-
-from scipy import signal
-import scipy.signal as sg
-from matplotlib import pyplot as plt
-
-from scipy.signal import fir_filter_design as ffd
-from scipy.signal import filter_design as ifd
 
 #Run the data through an anti-aliasing filter (F2137 qualified), save results as aliased data - aaflt
 '''
@@ -240,31 +246,9 @@ shoulder_aaflt_df
 heart_aaflt_df
 com_aaflt_df
 '''
+#TODO
 
-sampling_rate = 100
-decimation_factor = 10
-# calculate lower corner frequency (obspy.core.trace.py:1299)
-low_corner = 0.5 * sampling_rate / decimation_factor
-
-corners = 4  # obspy.signal.filter.py:104
-# calculate b, a for filter obspy.signal.filter.py:120-130
-nyquist = sampling_rate * 0.5
-[b, a] = sg.iirfilter(corners, low_corner/nyquist, btype='lowpass', ftype='butter',
-                      output='ba')
-# calculate frequency response
-w, h = sg.freqz(b, a, int(nyquist))
-freq = w/np.pi * nyquist
-
-new_nyquist = sampling_rate/decimation_factor*.5
-plt.plot(freq, 20*np.log10(abs(h)))
-plt.title('Lowpass @ %3.1f Hz, New Nyquist %3.1f' % (low_corner,
-  new_nyquist))
-plt.axvline(new_nyquist)
-plt.xlabel('Frequency [Hz]')
-plt.ylabel('Magnitude [dB]')
-plt.show()
-
-#Run the aliased data through a post processing filter (butterworth, ellip, cheby) , save results as post processed data - pp
+#Run the aliased data through a post processing butterworth filter, save results as post processed data - pp
 '''
 head_pp_df
 neck_pp_df
@@ -273,30 +257,110 @@ heart_pp_df
 com_pp_df
 '''
 
-# setup some of the required parameters
-Fs = 1e9           # sample-rate defined in the question, down-sampled
+def butter_lowpass(cutoff, fs, order=5):
+    nyq = 0.5 * fs
+    normal_cutoff = cutoff / nyq
+    b, a = butter(order, normal_cutoff, btype='low', analog=False)
+    return b, a
 
-# remez (fir) design arguements
-Fpass = 10e6       # passband edge
-Fstop = 11.1e6     # stopband edge, transition band 100kHz
-Wp = Fpass/(Fs)    # pass normalized frequency
-Ws = Fstop/(Fs)    # stop normalized frequency
+def butter_lowpass_filter(data, cutoff, fs, order=5):
+    b, a = butter_lowpass(cutoff, fs, order=order)
+    y = lfilter(b, a, data)
+    return y
 
-# iirdesign agruements
-Wip = (Fpass)/(Fs/2)
-Wis = (Fstop+1e6)/(Fs/2)
-Rp = 1             # passband ripple
-As = 42            # stopband attenuation
+# Filter requirements.
+order = 6
+fs = 30.0       # sample rate, Hz
+cutoff = 3.667  # desired cutoff frequency of the filter, Hz
 
-# Create a FIR filter, the remez function takes a list of 
-# "bands" and the amplitude for each band.
-taps = 4096
-br = ffd.remez(taps, [0, Wp, Ws, .5], [1,0], maxiter=10000) 
+# Get the filter coefficients so we can check its frequency response.
+b, a = butter_lowpass(cutoff, fs, order)
 
-# The iirdesign takes passband, stopband, passband ripple, 
-# and stop attenuation.
-bc, ac = ifd.iirdesign(Wip, Wis, Rp, As, ftype='ellip')  
-bb, ab = ifd.iirdesign(Wip, Wis, Rp, As, ftype='cheby2') 
+# Plot the frequency response.
+w, h = freqz(b, a, worN=8000)
+plt.subplot(2, 1, 1)
+plt.plot(0.5*fs*w/np.pi, np.abs(h), 'b')
+plt.plot(cutoff, 0.5*np.sqrt(2), 'ko')
+plt.axvline(cutoff, color='k')
+plt.xlim(0, 0.5*fs)
+plt.title("Lowpass Filter Frequency Response")
+plt.xlabel('Frequency [Hz]')
+plt.grid()
+
+
+# In[25]:
+
+
+# Demonstrate the use of the filter.
+# First make some data to be filtered.
+T = 5.0         # seconds
+n = int(T * fs) # total number of samples
+t = np.linspace(0, T, n, endpoint=False)
+# "Noisy" data.  We want to recover the 1.2 Hz signal from this.
+data = np.sin(1.2*2*np.pi*t) + 1.5*np.cos(9*2*np.pi*t) + 0.5*np.sin(12.0*2*np.pi*t)
+
+# Filter the data, and plot both the original and filtered signals.
+y = butter_lowpass_filter(data, cutoff, fs, order)
+
+plt.subplot(2, 1, 2)
+plt.plot(t, data, 'b-', label='data')
+plt.plot(t, y, 'g-', linewidth=2, label='filtered data')
+plt.xlabel('Time [sec]')
+plt.grid()
+plt.legend()
+
+plt.subplots_adjust(hspace=0.35)
+plt.show()
+
+
+# In[27]:
+
+
+# The data to be filtered is as follows:
+'''
+head_mnptd_df
+neck_mnptd_df
+shoulder_mnptd_df
+heart_mnptd_df
+com_mnptd_df
+'''
+
+cols_to_filter = ['Ax', 'Ay', 'Az', 
+            'Gx', 'Gy', 'Gz', 
+            'Qw', 'Qx', 'Qy', 'Qz'] 
+
+# Filter the data, and plot both the original and filtered signals.
+for cols in cols_to_filter:
+    head_mnptd_df[cols] = butter_lowpass_filter(head_mnptd_df[cols], cutoff, fs, order)
+    neck_mnptd_df[cols] = butter_lowpass_filter(neck_mnptd_df[cols], cutoff, fs, order)
+    shoulder_mnptd_df[cols] = butter_lowpass_filter(shoulder_mnptd_df[cols], cutoff, fs, order)
+    heart_mnptd_df[cols] = butter_lowpass_filter(heart_mnptd_df[cols], cutoff, fs, order)
+    com_mnptd_df[cols] = butter_lowpass_filter(com_mnptd_df[cols], cutoff, fs, order)
+
+
+# In[30]:
+
+
+#Save dataframe into new .csv
+head_mnptd_df.to_csv('/Users/shellyginelle/Data/1 - Head/BUTTERWORTH_FLTR_HEAD_DATA.csv')
+head_butterflt_df = pd.read_csv('/Users/shellyginelle/Data/1 - Head/BUTTERWORTH_FLTR_HEAD_DATA.csv', 
+                 skiprows=[0,1,2,3,4,5,6,7], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+
+neck_mnptd_df.to_csv('/Users/shellyginelle/Data/2 - Neck C7/BUTTERWORTH_FLTR_NECK_DATA.csv')
+neck_butterflt_df = pd.read_csv('/Users/shellyginelle/Data/2 - Neck C7/BUTTERWORTH_FLTR_NECK_DATA.csv', 
+                 skiprows=[0,1,2,3,4,5,6,7], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+
+shoulder_mnptd_df.to_csv('/Users/shellyginelle/Data/3 - Left Shoulder/BUTTERWORTH_FLTR_SHOULDER_DATA.csv')
+shoulder_butterflt_df = pd.read_csv('/Users/shellyginelle/Data/3 - Left Shoulder/BUTTERWORTH_FLTR_SHOULDER_DATA.csv', 
+                 skiprows=[0,1,2,3,4,5,6,7], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+
+heart_mnptd_df.to_csv('/Users/shellyginelle/Data/4 - Heart/BUTTERWORTH_FLTR_HEART_DATA.csv')
+heart_butterflt_df = pd.read_csv('/Users/shellyginelle/Data/4 - Heart/BUTTERWORTH_FLTR_HEART_DATA.csv', 
+                 skiprows=[0,1,2,3,4,5,6,7], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+
+com_mnptd_df.to_csv('/Users/shellyginelle/Data/5 - COM Harness/BUTTERWORTH_FLTR_COM_DATA.csv')
+com_butterflt_df = pd.read_csv('/Users/shellyginelle/Data/5 - COM Harness/BUTTERWORTH_FLTR_COM_DATA.csv', 
+                 skiprows=[0,1,2,3,4,5,6,7], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
 
 # ### Plot Data
@@ -304,7 +368,7 @@ bb, ab = ifd.iirdesign(Wip, Wis, Rp, As, ftype='cheby2')
 # 2. G-Force
 # 3. Quaternion
 
-# In[9]:
+# In[33]:
 
 
 #For your reference, acceleration_cols = ['Ax', 'Ay', 'Az']
@@ -312,31 +376,31 @@ bb, ab = ifd.iirdesign(Wip, Wis, Rp, As, ftype='cheby2')
 '''
 1. Plot HEAD data
 '''
-head_plot = head_raw_df.plot(title = 'Head Experienced Acceleration',  x = 'Time', y = acceleration_cols)
+head_plot = head_butterflt_df.plot(title = 'Head Experienced Acceleration',  x = 'Time', y = acceleration_cols)
 head_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 2. Plot NECK data
 '''
-neck_plot = neck_raw_df.plot(title = 'Neck Experienced Acceleration',  x = 'Time', y = acceleration_cols)
+neck_plot = neck_butterflt_df.plot(title = 'Neck Experienced Acceleration',  x = 'Time', y = acceleration_cols)
 neck_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 3. Plot SHOULDER data
 '''
-shoulder_plot = shoulder_raw_df.plot(title = 'Shoulder Experienced Acceleration',  x = 'Time', y = acceleration_cols)
+shoulder_plot = shoulder_butterflt_df.plot(title = 'Shoulder Experienced Acceleration',  x = 'Time', y = acceleration_cols)
 shoulder_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 4. Plot HEART data
 '''
-heart_plot = heart_raw_df.plot(title = 'Heart Experienced Acceleration',  x = 'Time', y = acceleration_cols)
+heart_plot = heart_butterflt_df.plot(title = 'Heart Experienced Acceleration',  x = 'Time', y = acceleration_cols)
 heart_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 5. Plot COM data
 '''
-com_plot = com_raw_df.plot(title = 'COM Experienced Acceleration',  x = 'Time', y = acceleration_cols)
+com_plot = com_butterflt_df.plot(title = 'COM Experienced Acceleration',  x = 'Time', y = acceleration_cols)
 com_plot.legend(loc=2, fontsize = 'xx-large')
 
 
@@ -351,7 +415,7 @@ com_plot.legend(loc=2, fontsize = 'xx-large')
 #head_run1_plot.legend(loc=2, fontsize = 'xx-large')
 
 
-# In[7]:
+# In[34]:
 
 
 #For your reference, gyroscope_cols = ['Gx', 'Gy', 'Gz']
@@ -359,35 +423,35 @@ com_plot.legend(loc=2, fontsize = 'xx-large')
 '''
 1. Plot HEAD data
 '''
-head_plot = head_raw_df.plot(title = 'Head Experienced Gyroscope',  x = 'Time', y = gyroscope_cols)
+head_plot = head_butterflt_df.plot(title = 'Head Experienced Gyroscope',  x = 'Time', y = gyroscope_cols)
 head_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 2. Plot NECK data
 '''
-neck_plot = neck_raw_df.plot(title = 'Neck Experienced Gyroscope',  x = 'Time', y = gyroscope_cols)
+neck_plot = neck_butterflt_df.plot(title = 'Neck Experienced Gyroscope',  x = 'Time', y = gyroscope_cols)
 neck_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 3. Plot SHOULDER data
 '''
-shoulder_plot = shoulder_raw_df.plot(title = 'Shoulder Experienced Gyroscope',  x = 'Time', y = gyroscope_cols)
+shoulder_plot = shoulder_butterflt_df.plot(title = 'Shoulder Experienced Gyroscope',  x = 'Time', y = gyroscope_cols)
 shoulder_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 4. Plot HEART data
 '''
-heart_plot = heart_raw_df.plot(title = 'Heart Experienced Gyroscope',  x = 'Time', y = gyroscope_cols)
+heart_plot = heart_butterflt_df.plot(title = 'Heart Experienced Gyroscope',  x = 'Time', y = gyroscope_cols)
 heart_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 5. Plot COM data
 '''
-com_plot = com_raw_df.plot(title = 'COM Experienced Gyroscope',  x = 'Time', y = gyroscope_cols)
+com_plot = com_butterflt_df.plot(title = 'COM Experienced Gyroscope',  x = 'Time', y = gyroscope_cols)
 com_plot.legend(loc=2, fontsize = 'xx-large')
 
 
-# In[8]:
+# In[35]:
 
 
 quarternion_cols = ['Qw', 'Qx', 'Qy', 'Qz']
@@ -395,31 +459,31 @@ quarternion_cols = ['Qw', 'Qx', 'Qy', 'Qz']
 '''
 1. Plot HEAD data
 '''
-head_plot = head_raw_df.plot(title = 'Head Experienced Quarternion',  x = 'Time', y = quarternion_cols)
+head_plot = head_butterflt_df.plot(title = 'Head Experienced Quarternion',  x = 'Time', y = quarternion_cols)
 head_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 2. Plot NECK data
 '''
-neck_plot = neck_raw_df.plot(title = 'Neck Experienced Quarternion',  x = 'Time', y = quarternion_cols)
+neck_plot = neck_butterflt_df.plot(title = 'Neck Experienced Quarternion',  x = 'Time', y = quarternion_cols)
 neck_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 3. Plot SHOULDER data
 '''
-shoulder_plot = shoulder_raw_df.plot(title = 'Shoulder Experienced Quarternion',  x = 'Time', y = quarternion_cols)
+shoulder_plot = shoulder_butterflt_df.plot(title = 'Shoulder Experienced Quarternion',  x = 'Time', y = quarternion_cols)
 shoulder_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 4. Plot HEART data
 '''
-heart_plot = heart_raw_df.plot(title = 'Heart Experienced Quarternion',  x = 'Time', y = quarternion_cols)
+heart_plot = heart_butterflt_df.plot(title = 'Heart Experienced Quarternion',  x = 'Time', y = quarternion_cols)
 heart_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 5. Plot COM data
 '''
-com_plot = com_raw_df.plot(title = 'COM Experienced Quarternion',  x = 'Time', y = quarternion_cols)
+com_plot = com_butterflt_df.plot(title = 'COM Experienced Quarternion',  x = 'Time', y = quarternion_cols)
 com_plot.legend(loc=2, fontsize = 'xx-large')
 
 
