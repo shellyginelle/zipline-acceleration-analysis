@@ -33,7 +33,7 @@
 
 # ### Import Libraries
 
-# In[6]:
+# In[1]:
 
 
 #Imports
@@ -51,10 +51,10 @@ from scipy.signal import butter, lfilter, freqz
 from math import pi
 
 
-# In[7]:
+# In[2]:
 
 
-#For debugging purposes
+#For debugging purposes - Checkpoint
 #Check is file path exists. In the following code, you will need to substitute the correspoding file path. 
 
 os.path.exists('/Users/shellyginelle/Data/1 - Head/DATA-001.csv')
@@ -67,7 +67,7 @@ os.path.exists('/Users/shellyginelle/Data/1 - Head/DATA-001.csv')
 #  - Arrival at Brake Mechanism
 # 2. Offloading - Figure out the time it took for you to get back onto the Zip Line of choice
 
-# In[19]:
+# In[8]:
 
 
 #Static Variables
@@ -174,9 +174,14 @@ com_raw_df = pd.read_csv("/Users/shellyginelle/Data/5 - COM Harness/COMBINED_COM
                  skiprows=[0,1,2,3,4,5,6,7], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
 
+#For debugging purposes - Checkpoint
+#Print last dataframe to show code has completed
+com_raw_df
+
+
 # ### Manipulate Data
 
-# In[20]:
+# In[9]:
 
 
 #Divide columns Ax, Ay, Az by 2048
@@ -199,9 +204,13 @@ for g_cols in gyroscope_cols:
     shoulder_raw_df[g_cols] = shoulder_raw_df[g_cols].divide(degree_sec)
     heart_raw_df[g_cols] = heart_raw_df[g_cols].divide(degree_sec)
     com_raw_df[g_cols] = com_raw_df[g_cols].divide(degree_sec)
+    
+#For debugging purposes - Checkpoint
+#Print max to show code has completed
+head_mnptd_df['Ax'].max()
 
 
-# In[21]:
+# In[10]:
 
 
 #Save dataframe into new .csv
@@ -225,17 +234,14 @@ com_raw_df.to_csv('/Users/shellyginelle/Data/5 - COM Harness/MANIPULATED_COM_DAT
 com_mnptd_df = pd.read_csv('/Users/shellyginelle/Data/5 - COM Harness/MANIPULATED_COM_DATA.csv', 
                  skiprows=[0,1,2,3,4,5,6,7], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
-
-# In[23]:
-
-
 #For debugging purposes - Checkpoint
-#head_mnptd_df['Ax'].max()
+#Print last dataframe to show code has completed
+com_mnptd_df
 
 
 # ### Filter Data
 
-# In[24]:
+# In[12]:
 
 
 #Run the data through an anti-aliasing filter (F2137 qualified), save results as aliased data - aaflt
@@ -258,7 +264,7 @@ com_pp_df
 '''
 
 def butter_lowpass(cutoff, fs, order=5):
-    nyq = 0.5 * fs
+    nyq = 0.5 * fs #The Nyquist frequency is half the sampling rate.
     normal_cutoff = cutoff / nyq
     b, a = butter(order, normal_cutoff, btype='low', analog=False)
     return b, a
@@ -270,8 +276,8 @@ def butter_lowpass_filter(data, cutoff, fs, order=5):
 
 # Filter requirements.
 order = 6
-fs = 30.0       # sample rate, Hz
-cutoff = 3.667  # desired cutoff frequency of the filter, Hz
+fs = 50.0       # sample rate, Hz
+cutoff = 5.0  # desired cutoff frequency of the filter, Hz
 
 # Get the filter coefficients so we can check its frequency response.
 b, a = butter_lowpass(cutoff, fs, order)
@@ -288,7 +294,7 @@ plt.xlabel('Frequency [Hz]')
 plt.grid()
 
 
-# In[25]:
+# In[13]:
 
 
 # Demonstrate the use of the filter.
@@ -313,7 +319,7 @@ plt.subplots_adjust(hspace=0.35)
 plt.show()
 
 
-# In[27]:
+# In[14]:
 
 
 # The data to be filtered is as follows:
@@ -338,7 +344,7 @@ for cols in cols_to_filter:
     com_mnptd_df[cols] = butter_lowpass_filter(com_mnptd_df[cols], cutoff, fs, order)
 
 
-# In[30]:
+# In[15]:
 
 
 #Save dataframe into new .csv
@@ -362,13 +368,17 @@ com_mnptd_df.to_csv('/Users/shellyginelle/Data/5 - COM Harness/BUTTERWORTH_FLTR_
 com_butterflt_df = pd.read_csv('/Users/shellyginelle/Data/5 - COM Harness/BUTTERWORTH_FLTR_COM_DATA.csv', 
                  skiprows=[0,1,2,3,4,5,6,7], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
+#For debugging purposes - Checkpoint
+#Print last dataframe to show code has completed
+com_butterflt_df
+
 
 # ### Plot Data
 # 1. Acceleration
 # 2. G-Force
 # 3. Quaternion
 
-# In[33]:
+# In[28]:
 
 
 #For your reference, acceleration_cols = ['Ax', 'Ay', 'Az']
@@ -376,31 +386,41 @@ com_butterflt_df = pd.read_csv('/Users/shellyginelle/Data/5 - COM Harness/BUTTER
 '''
 1. Plot HEAD data
 '''
-head_plot = head_butterflt_df.plot(title = 'Head Experienced Acceleration',  x = 'Time', y = acceleration_cols)
+head_plot = head_butterflt_df.plot(title = 'Head Experienced Acceleration',  
+                                   x = 'Time', y = acceleration_cols,
+                                   figsize=(18, 16), kind= 'line')
 head_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 2. Plot NECK data
 '''
-neck_plot = neck_butterflt_df.plot(title = 'Neck Experienced Acceleration',  x = 'Time', y = acceleration_cols)
+neck_plot = neck_butterflt_df.plot(title = 'Neck Experienced Acceleration',  
+                                   x = 'Time', y = acceleration_cols,
+                                   figsize=(18, 16), kind= 'line')
 neck_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 3. Plot SHOULDER data
 '''
-shoulder_plot = shoulder_butterflt_df.plot(title = 'Shoulder Experienced Acceleration',  x = 'Time', y = acceleration_cols)
+shoulder_plot = shoulder_butterflt_df.plot(title = 'Shoulder Experienced Acceleration',  
+                                           x = 'Time', y = acceleration_cols,
+                                           figsize=(18, 16), kind= 'line')
 shoulder_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 4. Plot HEART data
 '''
-heart_plot = heart_butterflt_df.plot(title = 'Heart Experienced Acceleration',  x = 'Time', y = acceleration_cols)
+heart_plot = heart_butterflt_df.plot(title = 'Heart Experienced Acceleration',  
+                                     x = 'Time', y = acceleration_cols,
+                                     figsize=(18, 16), kind= 'line')
 heart_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 5. Plot COM data
 '''
-com_plot = com_butterflt_df.plot(title = 'COM Experienced Acceleration',  x = 'Time', y = acceleration_cols)
+com_plot = com_butterflt_df.plot(title = 'COM Experienced Acceleration',  
+                                 x = 'Time', y = acceleration_cols,
+                                figsize=(18, 16), kind= 'line')
 com_plot.legend(loc=2, fontsize = 'xx-large')
 
 
@@ -423,35 +443,45 @@ com_plot.legend(loc=2, fontsize = 'xx-large')
 '''
 1. Plot HEAD data
 '''
-head_plot = head_butterflt_df.plot(title = 'Head Experienced Gyroscope',  x = 'Time', y = gyroscope_cols)
+head_plot = head_butterflt_df.plot(title = 'Head Experienced Gyroscope',  
+                                   x = 'Time', y = gyroscope_cols,
+                                   figsize=(18, 16), kind= 'line')
 head_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 2. Plot NECK data
 '''
-neck_plot = neck_butterflt_df.plot(title = 'Neck Experienced Gyroscope',  x = 'Time', y = gyroscope_cols)
+neck_plot = neck_butterflt_df.plot(title = 'Neck Experienced Gyroscope',  
+                                   x = 'Time', y = gyroscope_cols,
+                                   figsize=(18, 16), kind= 'line')
 neck_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 3. Plot SHOULDER data
 '''
-shoulder_plot = shoulder_butterflt_df.plot(title = 'Shoulder Experienced Gyroscope',  x = 'Time', y = gyroscope_cols)
+shoulder_plot = shoulder_butterflt_df.plot(title = 'Shoulder Experienced Gyroscope',  
+                                           x = 'Time', y = gyroscope_cols,
+                                           figsize=(18, 16), kind= 'line')
 shoulder_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 4. Plot HEART data
 '''
-heart_plot = heart_butterflt_df.plot(title = 'Heart Experienced Gyroscope',  x = 'Time', y = gyroscope_cols)
+heart_plot = heart_butterflt_df.plot(title = 'Heart Experienced Gyroscope',  
+                                     x = 'Time', y = gyroscope_cols,
+                                     figsize=(18, 16), kind= 'line')
 heart_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 5. Plot COM data
 '''
-com_plot = com_butterflt_df.plot(title = 'COM Experienced Gyroscope',  x = 'Time', y = gyroscope_cols)
+com_plot = com_butterflt_df.plot(title = 'COM Experienced Gyroscope',  
+                                 x = 'Time', y = gyroscope_cols,
+                                 figsize=(18, 16), kind= 'line')
 com_plot.legend(loc=2, fontsize = 'xx-large')
 
 
-# In[35]:
+# In[29]:
 
 
 quarternion_cols = ['Qw', 'Qx', 'Qy', 'Qz']
@@ -459,31 +489,41 @@ quarternion_cols = ['Qw', 'Qx', 'Qy', 'Qz']
 '''
 1. Plot HEAD data
 '''
-head_plot = head_butterflt_df.plot(title = 'Head Experienced Quarternion',  x = 'Time', y = quarternion_cols)
+head_plot = head_butterflt_df.plot(title = 'Head Experienced Quarternion',  
+                                   x = 'Time', y = quarternion_cols,
+                                   figsize=(18, 16), kind= 'line')
 head_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 2. Plot NECK data
 '''
-neck_plot = neck_butterflt_df.plot(title = 'Neck Experienced Quarternion',  x = 'Time', y = quarternion_cols)
+neck_plot = neck_butterflt_df.plot(title = 'Neck Experienced Quarternion',  
+                                   x = 'Time', y = quarternion_cols,
+                                   figsize=(18, 16), kind= 'line')
 neck_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 3. Plot SHOULDER data
 '''
-shoulder_plot = shoulder_butterflt_df.plot(title = 'Shoulder Experienced Quarternion',  x = 'Time', y = quarternion_cols)
+shoulder_plot = shoulder_butterflt_df.plot(title = 'Shoulder Experienced Quarternion',  
+                                           x = 'Time', y = quarternion_cols,
+                                   figsize=(18, 16), kind= 'line')
 shoulder_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 4. Plot HEART data
 '''
-heart_plot = heart_butterflt_df.plot(title = 'Heart Experienced Quarternion',  x = 'Time', y = quarternion_cols)
+heart_plot = heart_butterflt_df.plot(title = 'Heart Experienced Quarternion',  
+                                     x = 'Time', y = quarternion_cols,
+                                   figsize=(18, 16), kind= 'line')
 heart_plot.legend(loc=2, fontsize = 'xx-large')
 
 '''
 5. Plot COM data
 '''
-com_plot = com_butterflt_df.plot(title = 'COM Experienced Quarternion',  x = 'Time', y = quarternion_cols)
+com_plot = com_butterflt_df.plot(title = 'COM Experienced Quarternion',  
+                                 x = 'Time', y = quarternion_cols,
+                                   figsize=(18, 16), kind= 'line')
 com_plot.legend(loc=2, fontsize = 'xx-large')
 
 

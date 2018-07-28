@@ -1,0 +1,41 @@
+; PRODUCT_ID = HAM-IMU
+;deadband, deadbandtimeout, dwell options act
+;upon the accelerometer sensor data
+deadband = 0
+DeadBandTimeout = 5
+;dwell=100
+;set the length of the data file
+samplesperfile = 72000
+;control brightness of LEDs
+statusindicators = Normal
+;uncomment following line to activate logger
+;upon disconnect from USB
+;rebootOnDisconnect
+;activate max timing precision
+microres
+;add gyro to data stream
+gyroOn
+;add quaternion calculations to data stream
+quaton
+;add magnetometer data to data stream
+;mag data occurs at slower rate than accel/gyro
+magOn
+;set magnetometer sample rate
+compassSampleRate=10
+; sensor always operates at 200 hz 
+; but data stream to file can be subsampled to 
+; rates of 25, 50, 100 and 200 Hz
+mpu_SampleRate = 50
+; available accelerometer full scale ranges are 2, 4, 8 and 16g (2g is the
+; default)
+mpu_accelFsr=16
+; available gyro full scale ranges are 250, 500, 1000, and 2000 (2000
+; deg/sec is the default)
+mpu_gyroFsr=2000
+;add temperature to data stream
+tempOn
+;add pressure to data stream
+pressOn
+; pressure measurement interval, in milliseconds
+pressureInterval=500
+
