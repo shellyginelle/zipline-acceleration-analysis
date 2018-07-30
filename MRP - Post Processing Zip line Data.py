@@ -51,13 +51,55 @@ from scipy.signal import butter, lfilter, freqz
 from math import pi
 
 
-# In[2]:
+# In[14]:
 
+
+#Static Variables
+colnames_HAM_IMU = ['Time',
+            'Ax', 'Ay', 'Az', 
+            'Gx', 'Gy', 'Gz', 
+            'Qw', 'Qx', 'Qy', 'Qz', 
+            'Mx', 'My', 'Mz', 'T',
+            'Date Time'] 
+
+colnames_HAM_IMU_ALT = ['Time',
+            'Ax', 'Ay', 'Az', 
+            'Gx', 'Gy', 'Gz', 
+            'Qw', 'Qx', 'Qy', 'Qz', 
+            'Mx', 'My', 'Mz', 'P', 'T',
+            'Date Time'] 
+
+files = glob.glob('DATA-*')
+
+#Filepaths
+ttea_v1_head = '/Users/shellyginelle/Documents/GitHub/zipline-acceleration-analysis/061518 - Treetop Eco Adventure/Accelerations/1 - Head/'
+ttea_v1_neck = '/Users/shellyginelle/Documents/GitHub/zipline-acceleration-analysis/061518 - Treetop Eco Adventure/Accelerations/2 - Neck C7/'
+ttea_v1_shoulder = '/Users/shellyginelle/Documents/GitHub/zipline-acceleration-analysis/061518 - Treetop Eco Adventure/Accelerations/3 - Left Shoulder/'
+ttea_v1_heart = '/Users/shellyginelle/Documents/GitHub/zipline-acceleration-analysis/061518 - Treetop Eco Adventure/Accelerations/4 - Heart/'
+ttea_v1_com = '/Users/shellyginelle/Documents/GitHub/zipline-acceleration-analysis/061518 - Treetop Eco Adventure/Accelerations/5 - COM Harness/'
+
+bmfp_v2_head = '/Users/shellyginelle/Documents/GitHub/zipline-acceleration-analysis/061918 - Blue Mountain/Accelerations/1 - Head/'
+bmfp_v2_neck = '/Users/shellyginelle/Documents/GitHub/zipline-acceleration-analysis/061918 - Blue Mountain/Accelerations/2 - Neck C7/'
+bmfp_v2_shoulder = '/Users/shellyginelle/Documents/GitHub/zipline-acceleration-analysis/061918 - Blue Mountain/Accelerations/3 - Left Shoulder/'
+bmfp_v2_heart = '/Users/shellyginelle/Documents/GitHub/zipline-acceleration-analysis/061918 - Blue Mountain/Accelerations/4 - Heart/'
+bmfp_v2_com = '/Users/shellyginelle/Documents/GitHub/zipline-acceleration-analysis/061918 - Blue Mountain/Accelerations/5 - COM Harness/'
+
+bmfp_v3_head = '/Users/shellyginelle/Documents/GitHub/zipline-acceleration-analysis/062018 - Blue Mountain/Accelerations/1 - Head/'
+bmfp_v3_neck = '/Users/shellyginelle/Documents/GitHub/zipline-acceleration-analysis/062018 - Blue Mountain/Accelerations/2 - Neck C7/'
+bmfp_v3_shoulder = '/Users/shellyginelle/Documents/GitHub/zipline-acceleration-analysis/062018 - Blue Mountain/Accelerations/3 - Left Shoulder/'
+bmfp_v3_heart = '/Users/shellyginelle/Documents/GitHub/zipline-acceleration-analysis/062018 - Blue Mountain/Accelerations/4 - Heart/'
+bmfp_v3_com = '/Users/shellyginelle/Documents/GitHub/zipline-acceleration-analysis/062018 - Blue Mountain/Accelerations/5 - COM Harness/'
+
+bmfp_v4_head = '/Users/shellyginelle/Documents/GitHub/zipline-acceleration-analysis/062118 - Blue Mountain/Accelerations/1 - Head/'
+bmfp_v4_neck = '/Users/shellyginelle/Documents/GitHub/zipline-acceleration-analysis/062118 - Blue Mountain/Accelerations/2 - Neck C7/'
+bmfp_v4_shoulder = '/Users/shellyginelle/Documents/GitHub/zipline-acceleration-analysis/062118 - Blue Mountain/Accelerations/3 - Left Shoulder/'
+bmfp_v4_heart = '/Users/shellyginelle/Documents/GitHub/zipline-acceleration-analysis/062118 - Blue Mountain/Accelerations/4 - Heart/'
+bmfp_v4_com = '/Users/shellyginelle/Documents/GitHub/zipline-acceleration-analysis/062118 - Blue Mountain/Accelerations/5 - COM Harness/'
 
 #For debugging purposes - Checkpoint
 #Check is file path exists. In the following code, you will need to substitute the correspoding file path. 
-
 os.path.exists('/Users/shellyginelle/Data/1 - Head/DATA-001.csv')
+os.path.exists('/Users/shellyginelle/Documents/GitHub/zipline-acceleration-analysis/061518 - Treetop Eco Adventure/Accelerations/1 - Head/DATA-001.csv')
 
 
 # ### Import Data
@@ -67,26 +109,13 @@ os.path.exists('/Users/shellyginelle/Data/1 - Head/DATA-001.csv')
 #  - Arrival at Brake Mechanism
 # 2. Offloading - Figure out the time it took for you to get back onto the Zip Line of choice
 
-# In[8]:
+# In[31]:
 
-
-#Static Variables
-colnames_HAM_IMU = ['Time',
-            'Ax', 'Ay', 'Az', 
-            'Gx', 'Gy', 'Gz', 
-            'Qw', 'Qx', 'Qy', 'Qz', 
-            'Mx', 'My', 'Mz', 'T'] 
-colnames_HAM_IMU_ALT = ['Time',
-            'Ax', 'Ay', 'Az', 
-            'Gx', 'Gy', 'Gz', 
-            'Qw', 'Qx', 'Qy', 'Qz', 
-            'Mx', 'My', 'Mz', 'P', 'T'] 
-files = glob.glob('DATA-*')
 
 '''
 1. Read all HEAD data files
 '''
-head_raw_dir = os.chdir("/Users/shellyginelle/Data/1 - Head/")
+head_raw_dir = os.chdir(bmfp_v4_head)
 head_results = pd.DataFrame([], columns=colnames_HAM_IMU)
 
 for counter, file in enumerate(files):
@@ -95,16 +124,23 @@ for counter, file in enumerate(files):
     head_results = head_results.append(head_df)
 
 #Save the results into a separate combined .csv
-head_results.to_csv('/Users/shellyginelle/Data/1 - Head/COMBINED_HEAD_DATA.csv')
+head_results.to_csv(bmfp_v4_head + 'COMBINED_HEAD_DATA.csv')
 
 #Read combined data, rename columns and print data
-head_raw_df = pd.read_csv('/Users/shellyginelle/Data/1 - Head/COMBINED_HEAD_DATA.csv', 
-                 skiprows=[0,1,2,3,4,5,6,7], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+head_raw_df = pd.read_csv(bmfp_v4_head + 'COMBINED_HEAD_DATA.csv', 
+                         skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+
+#print combined dataframe
+#head_raw_df
+
+
+# In[32]:
+
 
 '''
 2. Read all NECK C7 data files
 '''
-neck_raw_dir = os.chdir("/Users/shellyginelle/Data/2 - Neck C7/")
+neck_raw_dir = os.chdir(bmfp_v4_neck)
 neck_results = pd.DataFrame([], columns=colnames_HAM_IMU)
 
 for counter, file in enumerate(files):
@@ -113,16 +149,23 @@ for counter, file in enumerate(files):
     neck_results = neck_results.append(neck_df)
 
 #Save the results into a separate combined .csv
-neck_results.to_csv('/Users/shellyginelle/Data/2 - Neck C7/COMBINED_NECK_DATA.csv')
+neck_results.to_csv(bmfp_v4_neck + 'COMBINED_NECK_DATA.csv')
 
 #Read combined data, rename columns and print data
-neck_raw_df = pd.read_csv("/Users/shellyginelle/Data/2 - Neck C7/COMBINED_NECK_DATA.csv", 
-                 skiprows=[0,1,2,3,4,5,6,7], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+neck_raw_df = pd.read_csv(bmfp_v4_neck + 'COMBINED_NECK_DATA.csv', 
+                  skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+
+#print combined dataframe
+#neck_raw_df
+
+
+# In[33]:
+
 
 '''
 3. Read all SHOULDER data files
 '''
-shoulder_raw_dir = os.chdir("/Users/shellyginelle/Data/3 - Left Shoulder/")
+shoulder_raw_dir = os.chdir(bmfp_v4_shoulder)
 shoulder_results = pd.DataFrame([], columns=colnames_HAM_IMU_ALT)
 
 for counter, file in enumerate(files):
@@ -131,34 +174,48 @@ for counter, file in enumerate(files):
     shoulder_results = shoulder_results.append(shoulder_df)
 
 #Save the results into a separate combined .csv
-shoulder_results.to_csv('/Users/shellyginelle/Data/3 - Left Shoulder/COMBINED_SHOULDER_DATA.csv')
+shoulder_results.to_csv(bmfp_v4_shoulder + 'COMBINED_SHOULDER_DATA.csv')
 
 #Read combined data, rename columns and print data
-shoulder_raw_df = pd.read_csv("/Users/shellyginelle/Data/3 - Left Shoulder/COMBINED_SHOULDER_DATA.csv", 
-                 skiprows=[0,1,2,3,4,5,6,7], sep=',', names=colnames_HAM_IMU_ALT, header=None, engine='python')
+shoulder_raw_df = pd.read_csv(bmfp_v4_shoulder + 'COMBINED_SHOULDER_DATA.csv', 
+                 skiprows=[0], sep=',', names=colnames_HAM_IMU_ALT, header=None, engine='python')
+
+#print combined dataframe
+#shoulder_raw_df
+
+
+# In[36]:
+
 
 '''
 4. Read all HEART data files
 '''
-heart_raw_dir = os.chdir("/Users/shellyginelle/Data/4 - Heart/")
+heart_raw_dir = os.chdir(bmfp_v4_heart)
 heart_results = pd.DataFrame([], columns=colnames_HAM_IMU)
 
 for counter, file in enumerate(files):
-    heart_df = pd.read_csv(file, skiprows=[0,1,2,3,4,5,6,7], sep=',', names=colnames_HAM_IMU, engine='python')
+    heart_df = pd.read_csv(file, skiprows=[0,1,2,3,4,5,6,7,8], sep=',', names=colnames_HAM_IMU, engine='python')
     #Append the results into one dataframe
     heart_results = heart_results.append(heart_df)
 
 #Save the results into a separate combined .csv
-heart_results.to_csv('/Users/shellyginelle/Data/4 - Heart/COMBINED_HEART_DATA.csv')
+heart_results.to_csv(bmfp_v4_heart + 'COMBINED_HEART_DATA.csv')
 
 #Read combined data, rename columns and print data
-heart_raw_df = pd.read_csv("/Users/shellyginelle/Data/4 - Heart/COMBINED_HEART_DATA.csv", 
-                 skiprows=[0,1,2,3,4,5,6,7], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+heart_raw_df = pd.read_csv(bmfp_v4_heart + 'COMBINED_HEART_DATA.csv', 
+                 skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+
+#print combined dataframe
+#heart_raw_df
+
+
+# In[38]:
+
 
 '''
 5. Read all COM Harness data files
 '''
-com_raw_dir = os.chdir("/Users/shellyginelle/Data/5 - COM Harness/")
+com_raw_dir = os.chdir(bmfp_v4_com)
 com_results = pd.DataFrame([], columns=colnames_HAM_IMU)
 
 for counter, file in enumerate(files):
@@ -167,21 +224,19 @@ for counter, file in enumerate(files):
     com_results = com_results.append(com_df)
 
 #Save the results into a separate combined .csv
-com_results.to_csv('/Users/shellyginelle/Data/5 - COM Harness/COMBINED_COM_DATA.csv')
+com_results.to_csv(bmfp_v4_com + 'COMBINED_COM_DATA.csv')
 
 #Read combined data, rename columns and print data
-com_raw_df = pd.read_csv("/Users/shellyginelle/Data/5 - COM Harness/COMBINED_COM_DATA.csv", 
-                 skiprows=[0,1,2,3,4,5,6,7], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+com_raw_df = pd.read_csv(bmfp_v4_com + 'COMBINED_COM_DATA.csv', 
+                 skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
-
-#For debugging purposes - Checkpoint
-#Print last dataframe to show code has completed
-com_raw_df
+#print combined dataframe
+#com_raw_df
 
 
 # ### Manipulate Data
 
-# In[9]:
+# In[39]:
 
 
 #Divide columns Ax, Ay, Az by 2048
@@ -192,67 +247,64 @@ count_g = 2048
 degree_sec = 65.536
 
 for a_cols in acceleration_cols:
-    head_raw_df[a_cols] = head_raw_df[a_cols].divide(count_g)
-    neck_raw_df[a_cols] = neck_raw_df[a_cols].divide(count_g)
-    shoulder_raw_df[a_cols] = shoulder_raw_df[a_cols].divide(count_g)
-    heart_raw_df[a_cols] = heart_raw_df[a_cols].divide(count_g)
-    com_raw_df[a_cols] = com_raw_df[a_cols].divide(count_g)   
+    
+    if (head_raw_df[a_cols].dtype == np.int64 
+        and neck_raw_df[a_cols].dtype == np.int64 
+        and shoulder_raw_df[a_cols].dtype == np.int64 
+        and heart_raw_df[a_cols].dtype == np.int64
+        and com_raw_df[a_cols].dtype == np.int64):
+        
+        head_raw_df[a_cols] = head_raw_df[a_cols].divide(count_g)
+        neck_raw_df[a_cols] = neck_raw_df[a_cols].divide(count_g)
+        shoulder_raw_df[a_cols] = shoulder_raw_df[a_cols].divide(count_g)
+        heart_raw_df[a_cols] = heart_raw_df[a_cols].divide(count_g)
+        com_raw_df[a_cols] = com_raw_df[a_cols].divide(count_g)   
 
 for g_cols in gyroscope_cols:
-    head_raw_df[g_cols] = head_raw_df[g_cols].divide(degree_sec)
-    neck_raw_df[g_cols] = neck_raw_df[g_cols].divide(degree_sec)
-    shoulder_raw_df[g_cols] = shoulder_raw_df[g_cols].divide(degree_sec)
-    heart_raw_df[g_cols] = heart_raw_df[g_cols].divide(degree_sec)
-    com_raw_df[g_cols] = com_raw_df[g_cols].divide(degree_sec)
-    
-#For debugging purposes - Checkpoint
-#Print max to show code has completed
-head_mnptd_df['Ax'].max()
+    if (head_raw_df[g_cols].dtype == np.int64 
+        and neck_raw_df[g_cols].dtype == np.int64 
+        and shoulder_raw_df[g_cols].dtype == np.int64 
+        and heart_raw_df[g_cols].dtype == np.int64
+        and com_raw_df[g_cols].dtype == np.int64):
+        
+        head_raw_df[g_cols] = head_raw_df[g_cols].divide(degree_sec)
+        neck_raw_df[g_cols] = neck_raw_df[g_cols].divide(degree_sec)
+        shoulder_raw_df[g_cols] = shoulder_raw_df[g_cols].divide(degree_sec)
+        heart_raw_df[g_cols] = heart_raw_df[g_cols].divide(degree_sec)
+        com_raw_df[g_cols] = com_raw_df[g_cols].divide(degree_sec)
 
 
-# In[10]:
+# In[40]:
 
 
 #Save dataframe into new .csv
 head_raw_df.to_csv('/Users/shellyginelle/Data/1 - Head/MANIPULATED_HEAD_DATA.csv')
 head_mnptd_df = pd.read_csv('/Users/shellyginelle/Data/1 - Head/MANIPULATED_HEAD_DATA.csv', 
-                 skiprows=[0,1,2,3,4,5,6,7], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+                 skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
 neck_raw_df.to_csv('/Users/shellyginelle/Data/2 - Neck C7/MANIPULATED_NECK_DATA.csv')
 neck_mnptd_df = pd.read_csv('/Users/shellyginelle/Data/2 - Neck C7/MANIPULATED_NECK_DATA.csv', 
-                 skiprows=[0,1,2,3,4,5,6,7], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+                 skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
 shoulder_raw_df.to_csv('/Users/shellyginelle/Data/3 - Left Shoulder/MANIPULATED_SHOULDER_DATA.csv')
 shoulder_mnptd_df = pd.read_csv('/Users/shellyginelle/Data/3 - Left Shoulder/MANIPULATED_SHOULDER_DATA.csv', 
-                 skiprows=[0,1,2,3,4,5,6,7], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+                 skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
 heart_raw_df.to_csv('/Users/shellyginelle/Data/4 - Heart/MANIPULATED_HEART_DATA.csv')
 heart_mnptd_df = pd.read_csv('/Users/shellyginelle/Data/4 - Heart/MANIPULATED_HEART_DATA.csv', 
-                 skiprows=[0,1,2,3,4,5,6,7], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+                 skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
 com_raw_df.to_csv('/Users/shellyginelle/Data/5 - COM Harness/MANIPULATED_COM_DATA.csv')
 com_mnptd_df = pd.read_csv('/Users/shellyginelle/Data/5 - COM Harness/MANIPULATED_COM_DATA.csv', 
-                 skiprows=[0,1,2,3,4,5,6,7], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+                 skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
-#For debugging purposes - Checkpoint
-#Print last dataframe to show code has completed
 com_mnptd_df
 
 
 # ### Filter Data
 
-# In[12]:
+# In[41]:
 
-
-#Run the data through an anti-aliasing filter (F2137 qualified), save results as aliased data - aaflt
-'''
-head_aaflt_df
-neck_aaflt_df
-shoulder_aaflt_df
-heart_aaflt_df
-com_aaflt_df
-'''
-#TODO
 
 #Run the aliased data through a post processing butterworth filter, save results as post processed data - pp
 '''
@@ -294,7 +346,7 @@ plt.xlabel('Frequency [Hz]')
 plt.grid()
 
 
-# In[13]:
+# In[42]:
 
 
 # Demonstrate the use of the filter.
@@ -319,7 +371,7 @@ plt.subplots_adjust(hspace=0.35)
 plt.show()
 
 
-# In[14]:
+# In[43]:
 
 
 # The data to be filtered is as follows:
@@ -344,189 +396,42 @@ for cols in cols_to_filter:
     com_mnptd_df[cols] = butter_lowpass_filter(com_mnptd_df[cols], cutoff, fs, order)
 
 
-# In[15]:
+# In[44]:
 
 
 #Save dataframe into new .csv
 head_mnptd_df.to_csv('/Users/shellyginelle/Data/1 - Head/BUTTERWORTH_FLTR_HEAD_DATA.csv')
 head_butterflt_df = pd.read_csv('/Users/shellyginelle/Data/1 - Head/BUTTERWORTH_FLTR_HEAD_DATA.csv', 
-                 skiprows=[0,1,2,3,4,5,6,7], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+                 skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
 neck_mnptd_df.to_csv('/Users/shellyginelle/Data/2 - Neck C7/BUTTERWORTH_FLTR_NECK_DATA.csv')
 neck_butterflt_df = pd.read_csv('/Users/shellyginelle/Data/2 - Neck C7/BUTTERWORTH_FLTR_NECK_DATA.csv', 
-                 skiprows=[0,1,2,3,4,5,6,7], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+                 skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
 shoulder_mnptd_df.to_csv('/Users/shellyginelle/Data/3 - Left Shoulder/BUTTERWORTH_FLTR_SHOULDER_DATA.csv')
 shoulder_butterflt_df = pd.read_csv('/Users/shellyginelle/Data/3 - Left Shoulder/BUTTERWORTH_FLTR_SHOULDER_DATA.csv', 
-                 skiprows=[0,1,2,3,4,5,6,7], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+                 skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
 heart_mnptd_df.to_csv('/Users/shellyginelle/Data/4 - Heart/BUTTERWORTH_FLTR_HEART_DATA.csv')
 heart_butterflt_df = pd.read_csv('/Users/shellyginelle/Data/4 - Heart/BUTTERWORTH_FLTR_HEART_DATA.csv', 
-                 skiprows=[0,1,2,3,4,5,6,7], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+                 skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
 com_mnptd_df.to_csv('/Users/shellyginelle/Data/5 - COM Harness/BUTTERWORTH_FLTR_COM_DATA.csv')
 com_butterflt_df = pd.read_csv('/Users/shellyginelle/Data/5 - COM Harness/BUTTERWORTH_FLTR_COM_DATA.csv', 
-                 skiprows=[0,1,2,3,4,5,6,7], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+                 skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
 #For debugging purposes - Checkpoint
 #Print last dataframe to show code has completed
 com_butterflt_df
 
 
+# #### This part will be added through Tableau Data Visualization
+# 
 # ### Plot Data
 # 1. Acceleration
 # 2. G-Force
 # 3. Quaternion
-
-# In[28]:
-
-
-#For your reference, acceleration_cols = ['Ax', 'Ay', 'Az']
-
-'''
-1. Plot HEAD data
-'''
-head_plot = head_butterflt_df.plot(title = 'Head Experienced Acceleration',  
-                                   x = 'Time', y = acceleration_cols,
-                                   figsize=(18, 16), kind= 'line')
-head_plot.legend(loc=2, fontsize = 'xx-large')
-
-'''
-2. Plot NECK data
-'''
-neck_plot = neck_butterflt_df.plot(title = 'Neck Experienced Acceleration',  
-                                   x = 'Time', y = acceleration_cols,
-                                   figsize=(18, 16), kind= 'line')
-neck_plot.legend(loc=2, fontsize = 'xx-large')
-
-'''
-3. Plot SHOULDER data
-'''
-shoulder_plot = shoulder_butterflt_df.plot(title = 'Shoulder Experienced Acceleration',  
-                                           x = 'Time', y = acceleration_cols,
-                                           figsize=(18, 16), kind= 'line')
-shoulder_plot.legend(loc=2, fontsize = 'xx-large')
-
-'''
-4. Plot HEART data
-'''
-heart_plot = heart_butterflt_df.plot(title = 'Heart Experienced Acceleration',  
-                                     x = 'Time', y = acceleration_cols,
-                                     figsize=(18, 16), kind= 'line')
-heart_plot.legend(loc=2, fontsize = 'xx-large')
-
-'''
-5. Plot COM data
-'''
-com_plot = com_butterflt_df.plot(title = 'COM Experienced Acceleration',  
-                                 x = 'Time', y = acceleration_cols,
-                                figsize=(18, 16), kind= 'line')
-com_plot.legend(loc=2, fontsize = 'xx-large')
-
-
-# In[47]:
-
-
-#For debugging purposes
-#Analyzing by chunks along the timeframe
-
-#head_run1 = head_raw_df.iloc[74:91]
-#head_run1_plot = head_run1.plot(title = 'Head Experienced Acceleration',  x = 'Time', y = acceleration)
-#head_run1_plot.legend(loc=2, fontsize = 'xx-large')
-
-
-# In[34]:
-
-
-#For your reference, gyroscope_cols = ['Gx', 'Gy', 'Gz']
-
-'''
-1. Plot HEAD data
-'''
-head_plot = head_butterflt_df.plot(title = 'Head Experienced Gyroscope',  
-                                   x = 'Time', y = gyroscope_cols,
-                                   figsize=(18, 16), kind= 'line')
-head_plot.legend(loc=2, fontsize = 'xx-large')
-
-'''
-2. Plot NECK data
-'''
-neck_plot = neck_butterflt_df.plot(title = 'Neck Experienced Gyroscope',  
-                                   x = 'Time', y = gyroscope_cols,
-                                   figsize=(18, 16), kind= 'line')
-neck_plot.legend(loc=2, fontsize = 'xx-large')
-
-'''
-3. Plot SHOULDER data
-'''
-shoulder_plot = shoulder_butterflt_df.plot(title = 'Shoulder Experienced Gyroscope',  
-                                           x = 'Time', y = gyroscope_cols,
-                                           figsize=(18, 16), kind= 'line')
-shoulder_plot.legend(loc=2, fontsize = 'xx-large')
-
-'''
-4. Plot HEART data
-'''
-heart_plot = heart_butterflt_df.plot(title = 'Heart Experienced Gyroscope',  
-                                     x = 'Time', y = gyroscope_cols,
-                                     figsize=(18, 16), kind= 'line')
-heart_plot.legend(loc=2, fontsize = 'xx-large')
-
-'''
-5. Plot COM data
-'''
-com_plot = com_butterflt_df.plot(title = 'COM Experienced Gyroscope',  
-                                 x = 'Time', y = gyroscope_cols,
-                                 figsize=(18, 16), kind= 'line')
-com_plot.legend(loc=2, fontsize = 'xx-large')
-
-
-# In[29]:
-
-
-quarternion_cols = ['Qw', 'Qx', 'Qy', 'Qz']
-
-'''
-1. Plot HEAD data
-'''
-head_plot = head_butterflt_df.plot(title = 'Head Experienced Quarternion',  
-                                   x = 'Time', y = quarternion_cols,
-                                   figsize=(18, 16), kind= 'line')
-head_plot.legend(loc=2, fontsize = 'xx-large')
-
-'''
-2. Plot NECK data
-'''
-neck_plot = neck_butterflt_df.plot(title = 'Neck Experienced Quarternion',  
-                                   x = 'Time', y = quarternion_cols,
-                                   figsize=(18, 16), kind= 'line')
-neck_plot.legend(loc=2, fontsize = 'xx-large')
-
-'''
-3. Plot SHOULDER data
-'''
-shoulder_plot = shoulder_butterflt_df.plot(title = 'Shoulder Experienced Quarternion',  
-                                           x = 'Time', y = quarternion_cols,
-                                   figsize=(18, 16), kind= 'line')
-shoulder_plot.legend(loc=2, fontsize = 'xx-large')
-
-'''
-4. Plot HEART data
-'''
-heart_plot = heart_butterflt_df.plot(title = 'Heart Experienced Quarternion',  
-                                     x = 'Time', y = quarternion_cols,
-                                   figsize=(18, 16), kind= 'line')
-heart_plot.legend(loc=2, fontsize = 'xx-large')
-
-'''
-5. Plot COM data
-'''
-com_plot = com_butterflt_df.plot(title = 'COM Experienced Quarternion',  
-                                 x = 'Time', y = quarternion_cols,
-                                   figsize=(18, 16), kind= 'line')
-com_plot.legend(loc=2, fontsize = 'xx-large')
-
-
+# 
 # ### Data Analysis
 # 
 # #### Acceleration & Gyroscope
@@ -535,41 +440,3 @@ com_plot.legend(loc=2, fontsize = 'xx-large')
 # 
 # #### Quarternion
 # 1. What was the position of the test participant? This will should be mapped to the acceleration experienced.
-
-# In[ ]:
-
-
-'''
-head_raw_df
-neck_raw_df
-shoulder_raw_df
-heart_raw_df
-com_raw_df
-'''
-
-#Acceleration
-head_ax_max = head_raw_df['Ax'].max()
-head_ax_max/2048
-
-head_ay_max = head_raw_df['Ay'].max()
-head_ay_max/2048
-
-head_az_max = head_raw_df['Az'].max()
-head_az_max/2048
-
-head_ax_min = head_raw_df['Ax'].min()
-head_ax_min/2048
-
-head_ay_min = head_raw_df['Ay'].min()
-head_ay_min/2048
-
-head_az_min = head_raw_df['Az'].min()
-head_az_min/2048
-
-#Gyroscope
-head_gx_min = head_raw_df['Gx'].min()
-head_gx_min/65.536
-
-head_gx_min = head_raw_df['Gx'].max()
-head_gx_min/65.536
-
