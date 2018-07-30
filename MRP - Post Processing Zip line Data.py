@@ -33,7 +33,7 @@
 
 # ### Import Libraries
 
-# In[1]:
+# In[52]:
 
 
 #Imports
@@ -51,7 +51,7 @@ from scipy.signal import butter, lfilter, freqz
 from math import pi
 
 
-# In[14]:
+# In[53]:
 
 
 #Static Variables
@@ -109,7 +109,7 @@ os.path.exists('/Users/shellyginelle/Documents/GitHub/zipline-acceleration-analy
 #  - Arrival at Brake Mechanism
 # 2. Offloading - Figure out the time it took for you to get back onto the Zip Line of choice
 
-# In[31]:
+# In[54]:
 
 
 '''
@@ -134,7 +134,7 @@ head_raw_df = pd.read_csv(bmfp_v4_head + 'COMBINED_HEAD_DATA.csv',
 #head_raw_df
 
 
-# In[32]:
+# In[55]:
 
 
 '''
@@ -159,7 +159,7 @@ neck_raw_df = pd.read_csv(bmfp_v4_neck + 'COMBINED_NECK_DATA.csv',
 #neck_raw_df
 
 
-# In[33]:
+# In[56]:
 
 
 '''
@@ -184,7 +184,7 @@ shoulder_raw_df = pd.read_csv(bmfp_v4_shoulder + 'COMBINED_SHOULDER_DATA.csv',
 #shoulder_raw_df
 
 
-# In[36]:
+# In[57]:
 
 
 '''
@@ -209,7 +209,7 @@ heart_raw_df = pd.read_csv(bmfp_v4_heart + 'COMBINED_HEART_DATA.csv',
 #heart_raw_df
 
 
-# In[38]:
+# In[58]:
 
 
 '''
@@ -236,7 +236,7 @@ com_raw_df = pd.read_csv(bmfp_v4_com + 'COMBINED_COM_DATA.csv',
 
 # ### Manipulate Data
 
-# In[39]:
+# In[59]:
 
 
 #Divide columns Ax, Ay, Az by 2048
@@ -274,28 +274,28 @@ for g_cols in gyroscope_cols:
         com_raw_df[g_cols] = com_raw_df[g_cols].divide(degree_sec)
 
 
-# In[40]:
+# In[60]:
 
 
 #Save dataframe into new .csv
-head_raw_df.to_csv('/Users/shellyginelle/Data/1 - Head/MANIPULATED_HEAD_DATA.csv')
-head_mnptd_df = pd.read_csv('/Users/shellyginelle/Data/1 - Head/MANIPULATED_HEAD_DATA.csv', 
+head_raw_df.to_csv(bmfp_v4_head + 'MANIPULATED_HEAD_DATA.csv')
+head_mnptd_df = pd.read_csv(bmfp_v4_head + 'MANIPULATED_HEAD_DATA.csv', 
                  skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
-neck_raw_df.to_csv('/Users/shellyginelle/Data/2 - Neck C7/MANIPULATED_NECK_DATA.csv')
-neck_mnptd_df = pd.read_csv('/Users/shellyginelle/Data/2 - Neck C7/MANIPULATED_NECK_DATA.csv', 
+neck_raw_df.to_csv(bmfp_v4_neck + 'MANIPULATED_NECK_DATA.csv')
+neck_mnptd_df = pd.read_csv(bmfp_v4_neck + 'MANIPULATED_NECK_DATA.csv', 
                  skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
-shoulder_raw_df.to_csv('/Users/shellyginelle/Data/3 - Left Shoulder/MANIPULATED_SHOULDER_DATA.csv')
-shoulder_mnptd_df = pd.read_csv('/Users/shellyginelle/Data/3 - Left Shoulder/MANIPULATED_SHOULDER_DATA.csv', 
+shoulder_raw_df.to_csv(bmfp_v4_shoulder + 'MANIPULATED_SHOULDER_DATA.csv')
+shoulder_mnptd_df = pd.read_csv(bmfp_v4_shoulder + 'MANIPULATED_SHOULDER_DATA.csv', 
                  skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
-heart_raw_df.to_csv('/Users/shellyginelle/Data/4 - Heart/MANIPULATED_HEART_DATA.csv')
-heart_mnptd_df = pd.read_csv('/Users/shellyginelle/Data/4 - Heart/MANIPULATED_HEART_DATA.csv', 
+heart_raw_df.to_csv(bmfp_v4_heart + 'MANIPULATED_HEART_DATA.csv')
+heart_mnptd_df = pd.read_csv(bmfp_v4_heart + 'MANIPULATED_HEART_DATA.csv', 
                  skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
-com_raw_df.to_csv('/Users/shellyginelle/Data/5 - COM Harness/MANIPULATED_COM_DATA.csv')
-com_mnptd_df = pd.read_csv('/Users/shellyginelle/Data/5 - COM Harness/MANIPULATED_COM_DATA.csv', 
+com_raw_df.to_csv(bmfp_v4_com + 'MANIPULATED_COM_DATA.csv')
+com_mnptd_df = pd.read_csv(bmfp_v4_com + 'MANIPULATED_COM_DATA.csv', 
                  skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
 com_mnptd_df
@@ -303,7 +303,7 @@ com_mnptd_df
 
 # ### Filter Data
 
-# In[41]:
+# In[61]:
 
 
 #Run the aliased data through a post processing butterworth filter, save results as post processed data - pp
@@ -346,7 +346,7 @@ plt.xlabel('Frequency [Hz]')
 plt.grid()
 
 
-# In[42]:
+# In[62]:
 
 
 # Demonstrate the use of the filter.
@@ -371,7 +371,7 @@ plt.subplots_adjust(hspace=0.35)
 plt.show()
 
 
-# In[43]:
+# In[63]:
 
 
 # The data to be filtered is as follows:
@@ -396,28 +396,28 @@ for cols in cols_to_filter:
     com_mnptd_df[cols] = butter_lowpass_filter(com_mnptd_df[cols], cutoff, fs, order)
 
 
-# In[44]:
+# In[64]:
 
 
 #Save dataframe into new .csv
-head_mnptd_df.to_csv('/Users/shellyginelle/Data/1 - Head/BUTTERWORTH_FLTR_HEAD_DATA.csv')
-head_butterflt_df = pd.read_csv('/Users/shellyginelle/Data/1 - Head/BUTTERWORTH_FLTR_HEAD_DATA.csv', 
+head_mnptd_df.to_csv(bmfp_v4_head + 'BUTTERWORTH_FLTR_HEAD_DATA.csv')
+head_butterflt_df = pd.read_csv(bmfp_v4_head + 'BUTTERWORTH_FLTR_HEAD_DATA.csv', 
                  skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
-neck_mnptd_df.to_csv('/Users/shellyginelle/Data/2 - Neck C7/BUTTERWORTH_FLTR_NECK_DATA.csv')
-neck_butterflt_df = pd.read_csv('/Users/shellyginelle/Data/2 - Neck C7/BUTTERWORTH_FLTR_NECK_DATA.csv', 
+neck_mnptd_df.to_csv(bmfp_v4_neck + 'BUTTERWORTH_FLTR_NECK_DATA.csv')
+neck_butterflt_df = pd.read_csv(bmfp_v4_neck + 'BUTTERWORTH_FLTR_NECK_DATA.csv', 
                  skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
-shoulder_mnptd_df.to_csv('/Users/shellyginelle/Data/3 - Left Shoulder/BUTTERWORTH_FLTR_SHOULDER_DATA.csv')
-shoulder_butterflt_df = pd.read_csv('/Users/shellyginelle/Data/3 - Left Shoulder/BUTTERWORTH_FLTR_SHOULDER_DATA.csv', 
+shoulder_mnptd_df.to_csv(bmfp_v4_shoulder + 'BUTTERWORTH_FLTR_SHOULDER_DATA.csv')
+shoulder_butterflt_df = pd.read_csv(bmfp_v4_shoulder + 'BUTTERWORTH_FLTR_SHOULDER_DATA.csv', 
                  skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
-heart_mnptd_df.to_csv('/Users/shellyginelle/Data/4 - Heart/BUTTERWORTH_FLTR_HEART_DATA.csv')
-heart_butterflt_df = pd.read_csv('/Users/shellyginelle/Data/4 - Heart/BUTTERWORTH_FLTR_HEART_DATA.csv', 
+heart_mnptd_df.to_csv(bmfp_v4_heart + 'BUTTERWORTH_FLTR_HEART_DATA.csv')
+heart_butterflt_df = pd.read_csv(bmfp_v4_heart + 'BUTTERWORTH_FLTR_HEART_DATA.csv', 
                  skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
-com_mnptd_df.to_csv('/Users/shellyginelle/Data/5 - COM Harness/BUTTERWORTH_FLTR_COM_DATA.csv')
-com_butterflt_df = pd.read_csv('/Users/shellyginelle/Data/5 - COM Harness/BUTTERWORTH_FLTR_COM_DATA.csv', 
+com_mnptd_df.to_csv(bmfp_v4_com + 'BUTTERWORTH_FLTR_COM_DATA.csv')
+com_butterflt_df = pd.read_csv(bmfp_v4_com + 'BUTTERWORTH_FLTR_COM_DATA.csv', 
                  skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
 #For debugging purposes - Checkpoint
