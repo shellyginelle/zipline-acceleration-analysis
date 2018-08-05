@@ -6,34 +6,14 @@
 # 
 # 1. Import data analysis libraries
 # 2. Import and store the data as “RAW DATA”
-#  - head_raw_df
-#  - neck_raw_df
-#  - shoulder_raw_df
-#  - heart_raw_df
-#  - com_raw_df
-# 3. Run the data through an anti-aliasing filter (F2137 qualified)
-# 4. Store the aliased data as “RAW DATA-ALIASED”
-#  - head_aaflt_df
-#  - neck_aaflt_df
-#  - shoulder_aaflt_df
-#  - heart_aaflt_df
-#  - com_aaflt_df
-# 5. Run the aliased data through a post processing filter
+# 3. Run the aliased data through a post processing filter and store data as "BUTTERWORTH FILTERED DATA"
 #  - The F2137 filter is a butterworth 4 pole
-#  - There are other options built currently (Chebyshev, elliptical) in matlab that will be run as well
-# 6. Store the post processed data as “PROCESSED DATA”
-#  - head_pp_df
-#  - neck_pp_df
-#  - shoulder_pp_df
-#  - heart_pp_df
-#  - com_pp_df
-# 7. Display post-processed data as a set of graphs
-#  - Show max and min STD
+# 4. Display post-processed data as a set of graphs
 # 
 
 # ### Import Libraries
 
-# In[52]:
+# In[40]:
 
 
 #Imports
@@ -51,7 +31,7 @@ from scipy.signal import butter, lfilter, freqz
 from math import pi
 
 
-# In[53]:
+# In[41]:
 
 
 #Static Variables
@@ -99,7 +79,7 @@ bmfp_v4_com = '/Users/shellyginelle/Documents/GitHub/zipline-acceleration-analys
 #For debugging purposes - Checkpoint
 #Check is file path exists. In the following code, you will need to substitute the correspoding file path. 
 os.path.exists('/Users/shellyginelle/Data/1 - Head/DATA-001.csv')
-os.path.exists('/Users/shellyginelle/Documents/GitHub/zipline-acceleration-analysis/061518 - Treetop Eco Adventure/Accelerations/1 - Head/DATA-001.csv')
+os.path.exists(bmfp_v4_head)
 
 
 # ### Import Data
@@ -109,7 +89,7 @@ os.path.exists('/Users/shellyginelle/Documents/GitHub/zipline-acceleration-analy
 #  - Arrival at Brake Mechanism
 # 2. Offloading - Figure out the time it took for you to get back onto the Zip Line of choice
 
-# In[54]:
+# In[42]:
 
 
 '''
@@ -134,7 +114,7 @@ head_raw_df = pd.read_csv(bmfp_v4_head + 'COMBINED_HEAD_DATA.csv',
 #head_raw_df
 
 
-# In[55]:
+# In[43]:
 
 
 '''
@@ -159,7 +139,7 @@ neck_raw_df = pd.read_csv(bmfp_v4_neck + 'COMBINED_NECK_DATA.csv',
 #neck_raw_df
 
 
-# In[56]:
+# In[44]:
 
 
 '''
@@ -184,7 +164,7 @@ shoulder_raw_df = pd.read_csv(bmfp_v4_shoulder + 'COMBINED_SHOULDER_DATA.csv',
 #shoulder_raw_df
 
 
-# In[57]:
+# In[45]:
 
 
 '''
@@ -209,7 +189,7 @@ heart_raw_df = pd.read_csv(bmfp_v4_heart + 'COMBINED_HEART_DATA.csv',
 #heart_raw_df
 
 
-# In[58]:
+# In[46]:
 
 
 '''
@@ -234,76 +214,20 @@ com_raw_df = pd.read_csv(bmfp_v4_com + 'COMBINED_COM_DATA.csv',
 #com_raw_df
 
 
-# ### Manipulate Data
-
-# In[59]:
+# In[47]:
 
 
-#Divide columns Ax, Ay, Az by 2048
-#Divide Gx, Gy, Gz by 65.536
-acceleration_cols = ['Ax', 'Ay', 'Az']
-gyroscope_cols = ['Gx', 'Gy', 'Gz']
-count_g = 2048
-degree_sec = 65.536
-
-for a_cols in acceleration_cols:
-    
-    if (head_raw_df[a_cols].dtype == np.int64 
-        and neck_raw_df[a_cols].dtype == np.int64 
-        and shoulder_raw_df[a_cols].dtype == np.int64 
-        and heart_raw_df[a_cols].dtype == np.int64
-        and com_raw_df[a_cols].dtype == np.int64):
-        
-        head_raw_df[a_cols] = head_raw_df[a_cols].divide(count_g)
-        neck_raw_df[a_cols] = neck_raw_df[a_cols].divide(count_g)
-        shoulder_raw_df[a_cols] = shoulder_raw_df[a_cols].divide(count_g)
-        heart_raw_df[a_cols] = heart_raw_df[a_cols].divide(count_g)
-        com_raw_df[a_cols] = com_raw_df[a_cols].divide(count_g)   
-
-for g_cols in gyroscope_cols:
-    if (head_raw_df[g_cols].dtype == np.int64 
-        and neck_raw_df[g_cols].dtype == np.int64 
-        and shoulder_raw_df[g_cols].dtype == np.int64 
-        and heart_raw_df[g_cols].dtype == np.int64
-        and com_raw_df[g_cols].dtype == np.int64):
-        
-        head_raw_df[g_cols] = head_raw_df[g_cols].divide(degree_sec)
-        neck_raw_df[g_cols] = neck_raw_df[g_cols].divide(degree_sec)
-        shoulder_raw_df[g_cols] = shoulder_raw_df[g_cols].divide(degree_sec)
-        heart_raw_df[g_cols] = heart_raw_df[g_cols].divide(degree_sec)
-        com_raw_df[g_cols] = com_raw_df[g_cols].divide(degree_sec)
-
-
-# In[60]:
-
-
-#Save dataframe into new .csv
-head_raw_df.to_csv(bmfp_v4_head + 'MANIPULATED_HEAD_DATA.csv')
-head_mnptd_df = pd.read_csv(bmfp_v4_head + 'MANIPULATED_HEAD_DATA.csv', 
-                 skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
-
-neck_raw_df.to_csv(bmfp_v4_neck + 'MANIPULATED_NECK_DATA.csv')
-neck_mnptd_df = pd.read_csv(bmfp_v4_neck + 'MANIPULATED_NECK_DATA.csv', 
-                 skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
-
-shoulder_raw_df.to_csv(bmfp_v4_shoulder + 'MANIPULATED_SHOULDER_DATA.csv')
-shoulder_mnptd_df = pd.read_csv(bmfp_v4_shoulder + 'MANIPULATED_SHOULDER_DATA.csv', 
-                 skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
-
-heart_raw_df.to_csv(bmfp_v4_heart + 'MANIPULATED_HEART_DATA.csv')
-heart_mnptd_df = pd.read_csv(bmfp_v4_heart + 'MANIPULATED_HEART_DATA.csv', 
-                 skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
-
-com_raw_df.to_csv(bmfp_v4_com + 'MANIPULATED_COM_DATA.csv')
-com_mnptd_df = pd.read_csv(bmfp_v4_com + 'MANIPULATED_COM_DATA.csv', 
-                 skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
-
-com_mnptd_df
+#Create temp df so we don't alter the raw data values, will need for plots later
+head_raw_temp_df = head_raw_df
+neck_raw_temp_df = neck_raw_df
+shoulder_raw_temp_df = shoulder_raw_df
+heart_raw_temp_df = heart_raw_df
+com_raw_temp_df = com_raw_df
 
 
 # ### Filter Data
 
-# In[61]:
+# In[48]:
 
 
 #Run the aliased data through a post processing butterworth filter, save results as post processed data - pp
@@ -346,7 +270,7 @@ plt.xlabel('Frequency [Hz]')
 plt.grid()
 
 
-# In[62]:
+# In[49]:
 
 
 # Demonstrate the use of the filter.
@@ -371,58 +295,124 @@ plt.subplots_adjust(hspace=0.35)
 plt.show()
 
 
-# In[63]:
+# In[50]:
 
 
 # The data to be filtered is as follows:
-'''
-head_mnptd_df
-neck_mnptd_df
-shoulder_mnptd_df
-heart_mnptd_df
-com_mnptd_df
-'''
-
 cols_to_filter = ['Ax', 'Ay', 'Az', 
             'Gx', 'Gy', 'Gz', 
             'Qw', 'Qx', 'Qy', 'Qz'] 
 
 # Filter the data, and plot both the original and filtered signals.
 for cols in cols_to_filter:
-    head_mnptd_df[cols] = butter_lowpass_filter(head_mnptd_df[cols], cutoff, fs, order)
-    neck_mnptd_df[cols] = butter_lowpass_filter(neck_mnptd_df[cols], cutoff, fs, order)
-    shoulder_mnptd_df[cols] = butter_lowpass_filter(shoulder_mnptd_df[cols], cutoff, fs, order)
-    heart_mnptd_df[cols] = butter_lowpass_filter(heart_mnptd_df[cols], cutoff, fs, order)
-    com_mnptd_df[cols] = butter_lowpass_filter(com_mnptd_df[cols], cutoff, fs, order)
+    head_raw_temp_df[cols] = butter_lowpass_filter(head_raw_temp_df[cols], cutoff, fs, order)
+    neck_raw_temp_df[cols] = butter_lowpass_filter(neck_raw_temp_df[cols], cutoff, fs, order)
+    shoulder_raw_temp_df[cols] = butter_lowpass_filter(shoulder_raw_temp_df[cols], cutoff, fs, order)
+    heart_raw_temp_df[cols] = butter_lowpass_filter(heart_raw_temp_df[cols], cutoff, fs, order)
+    com_raw_temp_df[cols] = butter_lowpass_filter(com_raw_temp_df[cols], cutoff, fs, order)
 
 
-# In[64]:
+# In[51]:
 
 
 #Save dataframe into new .csv
-head_mnptd_df.to_csv(bmfp_v4_head + 'BUTTERWORTH_FLTR_HEAD_DATA.csv')
+head_raw_temp_df.to_csv(bmfp_v4_head + 'BUTTERWORTH_FLTR_HEAD_DATA.csv')
 head_butterflt_df = pd.read_csv(bmfp_v4_head + 'BUTTERWORTH_FLTR_HEAD_DATA.csv', 
                  skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
-neck_mnptd_df.to_csv(bmfp_v4_neck + 'BUTTERWORTH_FLTR_NECK_DATA.csv')
+neck_raw_temp_df.to_csv(bmfp_v4_neck + 'BUTTERWORTH_FLTR_NECK_DATA.csv')
 neck_butterflt_df = pd.read_csv(bmfp_v4_neck + 'BUTTERWORTH_FLTR_NECK_DATA.csv', 
                  skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
-shoulder_mnptd_df.to_csv(bmfp_v4_shoulder + 'BUTTERWORTH_FLTR_SHOULDER_DATA.csv')
+shoulder_raw_temp_df.to_csv(bmfp_v4_shoulder + 'BUTTERWORTH_FLTR_SHOULDER_DATA.csv')
 shoulder_butterflt_df = pd.read_csv(bmfp_v4_shoulder + 'BUTTERWORTH_FLTR_SHOULDER_DATA.csv', 
                  skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
-heart_mnptd_df.to_csv(bmfp_v4_heart + 'BUTTERWORTH_FLTR_HEART_DATA.csv')
+heart_raw_temp_df.to_csv(bmfp_v4_heart + 'BUTTERWORTH_FLTR_HEART_DATA.csv')
 heart_butterflt_df = pd.read_csv(bmfp_v4_heart + 'BUTTERWORTH_FLTR_HEART_DATA.csv', 
                  skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
-com_mnptd_df.to_csv(bmfp_v4_com + 'BUTTERWORTH_FLTR_COM_DATA.csv')
+com_raw_temp_df.to_csv(bmfp_v4_com + 'BUTTERWORTH_FLTR_COM_DATA.csv')
 com_butterflt_df = pd.read_csv(bmfp_v4_com + 'BUTTERWORTH_FLTR_COM_DATA.csv', 
                  skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
 
 #For debugging purposes - Checkpoint
 #Print last dataframe to show code has completed
-com_butterflt_df
+#com_butterflt_df
+
+
+# ### Calculate Data
+# 
+# The Invensesense MPU-9250 reports accelerometer data using a 16-bit value, or 65536 counts. To convert the raw data to “g” units and “degree-seconds”, accelerometer data is divided by 2048 and gyroscope data is divided by 65.536. 
+
+# In[52]:
+
+
+#Divide columns Ax, Ay, Az by 2048
+#Divide Gx, Gy, Gz by 65.536
+acceleration_cols = ['Ax', 'Ay', 'Az']
+gyroscope_cols = ['Gx', 'Gy', 'Gz']
+count_g = 2048
+degree_sec = 65.536
+is_int = np.int64 
+if_float = np.float64
+
+
+for a_cols in acceleration_cols:
+    
+    if (head_butterflt_df[a_cols].dtype == np.float64 
+        and neck_butterflt_df[a_cols].dtype == np.float64 
+        and shoulder_butterflt_df[a_cols].dtype == np.float64 
+        and heart_butterflt_df[a_cols].dtype == np.float64
+        and com_butterflt_df[a_cols].dtype == np.float64):
+        
+        head_butterflt_df[a_cols] = head_butterflt_df[a_cols].divide(count_g)
+        neck_butterflt_df[a_cols] = neck_butterflt_df[a_cols].divide(count_g)
+        shoulder_butterflt_df[a_cols] = shoulder_butterflt_df[a_cols].divide(count_g)
+        heart_butterflt_df[a_cols] = heart_butterflt_df[a_cols].divide(count_g)
+        com_butterflt_df[a_cols] = com_butterflt_df[a_cols].divide(count_g)   
+
+for g_cols in gyroscope_cols:
+    if (head_butterflt_df[g_cols].dtype == np.float64 
+        and neck_butterflt_df[g_cols].dtype == np.float64 
+        and shoulder_butterflt_df[g_cols].dtype == np.float64 
+        and heart_butterflt_df[g_cols].dtype == np.float64
+        and com_butterflt_df[g_cols].dtype == np.float64):
+        
+        head_butterflt_df[g_cols] = head_butterflt_df[g_cols].divide(degree_sec)
+        neck_butterflt_df[g_cols] = neck_butterflt_df[g_cols].divide(degree_sec)
+        shoulder_butterflt_df[g_cols] = shoulder_butterflt_df[g_cols].divide(degree_sec)
+        heart_butterflt_df[g_cols] = heart_butterflt_df[g_cols].divide(degree_sec)
+        com_butterflt_df[g_cols] = com_butterflt_df[g_cols].divide(degree_sec)
+
+
+# In[53]:
+
+
+#Save dataframe into new .csv
+head_butterflt_df.to_csv(bmfp_v4_head + 'MANIPULATED_HEAD_DATA.csv')
+head_mnptd_df = pd.read_csv(bmfp_v4_head + 'MANIPULATED_HEAD_DATA.csv', 
+                 skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+
+neck_butterflt_df.to_csv(bmfp_v4_neck + 'MANIPULATED_NECK_DATA.csv')
+neck_mnptd_df = pd.read_csv(bmfp_v4_neck + 'MANIPULATED_NECK_DATA.csv', 
+                 skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+
+shoulder_butterflt_df.to_csv(bmfp_v4_shoulder + 'MANIPULATED_SHOULDER_DATA.csv')
+shoulder_mnptd_df = pd.read_csv(bmfp_v4_shoulder + 'MANIPULATED_SHOULDER_DATA.csv', 
+                 skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+
+heart_butterflt_df.to_csv(bmfp_v4_heart + 'MANIPULATED_HEART_DATA.csv')
+heart_mnptd_df = pd.read_csv(bmfp_v4_heart + 'MANIPULATED_HEART_DATA.csv', 
+                 skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+
+com_butterflt_df.to_csv(bmfp_v4_com + 'MANIPULATED_COM_DATA.csv')
+com_mnptd_df = pd.read_csv(bmfp_v4_com + 'MANIPULATED_COM_DATA.csv', 
+                 skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+
+#For debugging purposes - Checkpoint
+#Print last dataframe to show code has completed
+#com_mnptd_df
 
 
 # #### This part will be added through Tableau Data Visualization
@@ -440,3 +430,25 @@ com_butterflt_df
 # 
 # #### Quarternion
 # 1. What was the position of the test participant? This will should be mapped to the acceleration experienced.
+
+# In[56]:
+
+
+'''
+1. Plot HEAD data
+'''
+
+
+# Raw Data
+head_raw_plot = head_results.iloc[170:200].plot(title = 'Head Experienced Acceleration - Raw',  
+                                   x = 'Time', y = acceleration_cols,
+                                   figsize = (16,6))
+head_raw_plot.legend(loc=2, fontsize = 'xx-large')
+
+
+#Filtered Data
+head_pp_plot = head_mnptd_df.iloc[170:200].plot(title = 'Head Experienced Acceleration - Filtered',  
+                                   x = 'Time', y = acceleration_cols,
+                                   figsize = (16,6))
+head_pp_plot.legend(loc=2, fontsize = 'xx-large')
+
