@@ -8,12 +8,20 @@
 # 2. Import and store the data as “RAW DATA”
 # 3. Run the aliased data through a post processing filter and store data as "BUTTERWORTH FILTERED DATA"
 #  - The F2137 filter is a butterworth 4 pole
-# 4. Display post-processed data as a set of graphs
+# 4. The Invensesense MPU-9250 reports accelerometer data using a 16-bit value, or 65536 counts. To convert the raw data to “g” units and “degree-seconds”, accelerometer data is divided by 2048 and gyroscope data is divided by 65.536. Store final data as "MANIPULATED DATA"
+# 5. Using the video duration data (estimated values), extract the runs from the combined data.
+#  - Duration to trim until start of first run
+#  - Run duration
+#  - Transit duration
+#  - Repeat
+# 5. Display post-processed data as a set of graphs
+#  - Show runs individually
+#  - Show runs compiled with standard deviation (however this may not be the best plot because of the swing/rotation of the user)
 # 
 
 # ### Import Libraries
 
-# In[40]:
+# In[18]:
 
 
 #Imports
@@ -26,12 +34,14 @@ import matplotlib.pyplot as plt
 import plotly.plotly as py
 import plotly.graph_objs as go
 from scipy.signal import butter, lfilter, freqz
-
-#Create random data with numpy
 from math import pi
 
+#Ignore warning
+import warnings
+warnings.filterwarnings("ignore")
 
-# In[41]:
+
+# In[19]:
 
 
 #Static Variables
@@ -89,7 +99,7 @@ os.path.exists(bmfp_v4_head)
 #  - Arrival at Brake Mechanism
 # 2. Offloading - Figure out the time it took for you to get back onto the Zip Line of choice
 
-# In[42]:
+# In[20]:
 
 
 '''
@@ -114,7 +124,7 @@ head_raw_df = pd.read_csv(bmfp_v4_head + 'COMBINED_HEAD_DATA.csv',
 #head_raw_df
 
 
-# In[43]:
+# In[21]:
 
 
 '''
@@ -139,7 +149,7 @@ neck_raw_df = pd.read_csv(bmfp_v4_neck + 'COMBINED_NECK_DATA.csv',
 #neck_raw_df
 
 
-# In[44]:
+# In[22]:
 
 
 '''
@@ -164,7 +174,7 @@ shoulder_raw_df = pd.read_csv(bmfp_v4_shoulder + 'COMBINED_SHOULDER_DATA.csv',
 #shoulder_raw_df
 
 
-# In[45]:
+# In[23]:
 
 
 '''
@@ -189,7 +199,7 @@ heart_raw_df = pd.read_csv(bmfp_v4_heart + 'COMBINED_HEART_DATA.csv',
 #heart_raw_df
 
 
-# In[46]:
+# In[24]:
 
 
 '''
@@ -214,7 +224,7 @@ com_raw_df = pd.read_csv(bmfp_v4_com + 'COMBINED_COM_DATA.csv',
 #com_raw_df
 
 
-# In[47]:
+# In[25]:
 
 
 #Create temp df so we don't alter the raw data values, will need for plots later
@@ -227,7 +237,7 @@ com_raw_temp_df = com_raw_df
 
 # ### Filter Data
 
-# In[48]:
+# In[26]:
 
 
 #Run the aliased data through a post processing butterworth filter, save results as post processed data - pp
@@ -270,7 +280,7 @@ plt.xlabel('Frequency [Hz]')
 plt.grid()
 
 
-# In[49]:
+# In[27]:
 
 
 # Demonstrate the use of the filter.
@@ -295,7 +305,7 @@ plt.subplots_adjust(hspace=0.35)
 plt.show()
 
 
-# In[50]:
+# In[28]:
 
 
 # The data to be filtered is as follows:
@@ -312,7 +322,7 @@ for cols in cols_to_filter:
     com_raw_temp_df[cols] = butter_lowpass_filter(com_raw_temp_df[cols], cutoff, fs, order)
 
 
-# In[51]:
+# In[29]:
 
 
 #Save dataframe into new .csv
@@ -345,7 +355,7 @@ com_butterflt_df = pd.read_csv(bmfp_v4_com + 'BUTTERWORTH_FLTR_COM_DATA.csv',
 # 
 # The Invensesense MPU-9250 reports accelerometer data using a 16-bit value, or 65536 counts. To convert the raw data to “g” units and “degree-seconds”, accelerometer data is divided by 2048 and gyroscope data is divided by 65.536. 
 
-# In[52]:
+# In[30]:
 
 
 #Divide columns Ax, Ay, Az by 2048
@@ -386,7 +396,7 @@ for g_cols in gyroscope_cols:
         com_butterflt_df[g_cols] = com_butterflt_df[g_cols].divide(degree_sec)
 
 
-# In[53]:
+# In[31]:
 
 
 #Save dataframe into new .csv
@@ -431,24 +441,134 @@ com_mnptd_df = pd.read_csv(bmfp_v4_com + 'MANIPULATED_COM_DATA.csv',
 # #### Quarternion
 # 1. What was the position of the test participant? This will should be mapped to the acceleration experienced.
 
-# In[56]:
+# In[40]:
 
 
 '''
-1. Plot HEAD data
+Read all video duration data files
+
+Note: 50 samples per second, 3000 samples per minute
 '''
+#Variables
+samples_per_ms = 5
+samples_per_second = 50
+samples_per_minute = 3000
+convert_to_seconds = 86400
+
+avg_swing_time = samples_per_second + (samples_per_ms*3)
+avg_run_time = samples_per_second * 13 
+
+video_visit4_data = '/Users/shellyginelle/Documents/GitHub/zipline-acceleration-analysis/Video Data Analysis/Video Data Analysis - Visit 4.csv'
+colnames_video_data = ['Visit', 'Run', 
+                       'Run Start', 'Brake Start', 'Run End',
+                       'Run to Brake Duration','Brake Swing Duration', 'Transit Duration', 
+                       'Avg Run Duration', 'Avg Transit Duration'] 
+
+#Read and print data
+video_visit4_df = pd.read_csv(video_visit4_data, skiprows=[0], sep=',', 
+                       names=colnames_video_data, header=None, engine='python')
+
+#print combined dataframe
+video_visit4_df
 
 
-# Raw Data
-head_raw_plot = head_results.iloc[170:200].plot(title = 'Head Experienced Acceleration - Raw',  
-                                   x = 'Time', y = acceleration_cols,
-                                   figsize = (16,6))
-head_raw_plot.legend(loc=2, fontsize = 'xx-large')
+# In[74]:
 
 
-#Filtered Data
-head_pp_plot = head_mnptd_df.iloc[170:200].plot(title = 'Head Experienced Acceleration - Filtered',  
-                                   x = 'Time', y = acceleration_cols,
-                                   figsize = (16,6))
-head_pp_plot.legend(loc=2, fontsize = 'xx-large')
+def calculate_row_count(value_to_convert):
+    row_count = float(value_to_convert) * convert_to_seconds * samples_per_second
+    return int(row_count)
+
+trim_duration = calculate_row_count(video_visit4_df.loc[1, 'Run Start'])
+
+run1_duration = calculate_row_count(video_visit4_df.loc[6, 'Run to Brake Duration'])
+run2_duration = calculate_row_count(video_visit4_df.loc[7, 'Run to Brake Duration'])
+run3_duration = calculate_row_count(video_visit4_df.loc[8, 'Run to Brake Duration'])
+run4_duration = calculate_row_count(video_visit4_df.loc[9, 'Run to Brake Duration'])
+run5_duration = calculate_row_count(video_visit4_df.loc[10, 'Run to Brake Duration'])
+run6_duration = calculate_row_count(video_visit4_df.loc[11, 'Run to Brake Duration'])
+run7_duration = calculate_row_count(video_visit4_df.loc[12, 'Run to Brake Duration'])
+
+transit1_duration = calculate_row_count(video_visit4_df.loc[6, 'Transit Duration'])
+transit2_duration = calculate_row_count(video_visit4_df.loc[7, 'Transit Duration'])
+transit3_duration = calculate_row_count(video_visit4_df.loc[8, 'Transit Duration'])
+transit4_duration = calculate_row_count(video_visit4_df.loc[9, 'Transit Duration'])
+transit5_duration = calculate_row_count(video_visit4_df.loc[10, 'Transit Duration'])
+transit6_duration = calculate_row_count(video_visit4_df.loc[11, 'Transit Duration'])
+
+run1_start = trim_duration + run1_duration
+run1_end = run1_start + 30
+
+run2_start = transit1_duration + run2_duration
+run2_end = run2_start + 50
+
+run3_start = transit2_duration + run3_duration
+run3_end = run3_start + 50
+
+run4_start = transit3_duration + run4_duration
+run4_end = run4_start + 50
+
+run5_start = transit4_duration + run5_duration
+run5_end = run5_start + 50
+
+run6_start = transit5_duration + run6_duration
+run6_end = run4_start + 50
+
+run7_start = transit6_duration + run7_duration
+run7_end = run4_start + 50
+
+print(run1_start, run1_end)
+
+
+# In[271]:
+
+
+#3000*4.5 = 13500
+#transit to first run = head_mnptd_df.iloc[3370:4800] ?
+
+try:
+    # Run 1
+    head_run1_plot = head_mnptd_df.iloc[6000:6300].plot(
+        title = 'Head Experienced Acceleration - Raw - Run 1',  
+        x = 'Time', y = acceleration_cols, figsize = (16,6))
+    head_run1_plot.legend(loc=2, fontsize = 'xx-large')
+    
+    # Run 2
+    head_run2_plot = head_mnptd_df.iloc[22050:22350].plot(
+        title = 'Head Experienced Acceleration - Raw - Run 2',  
+        x = 'Time', y = acceleration_cols, figsize = (16,6))
+    head_run2_plot.legend(loc=2, fontsize = 'xx-large')
+    
+    # Run 3
+    head_run3_plot = head_mnptd_df.iloc[35950:36250].plot(
+        title = 'Head Experienced Acceleration - Raw - Run 3',  
+        x = 'Time', y = acceleration_cols, figsize = (16,6))
+    head_run3_plot.legend(loc=2, fontsize = 'xx-large')
+
+    # Run 4
+    head_run4_plot = head_mnptd_df.iloc[52350:52650].plot(
+        title = 'Head Experienced Acceleration - Raw - Run 4',  
+        x = 'Time', y = acceleration_cols, figsize = (16,6))
+    head_run4_plot.legend(loc=2, fontsize = 'xx-large')
+
+    # Run 5
+    head_run5_plot = head_mnptd_df.iloc[67850:68150].plot(
+        title = 'Head Experienced Acceleration - Raw - Run 5',  
+        x = 'Time', y = acceleration_cols, figsize = (16,6))
+    head_run5_plot.legend(loc=2, fontsize = 'xx-large')
+    
+    # Run 6
+    head_run6_plot = head_mnptd_df.iloc[81500:81800].plot(
+        title = 'Head Experienced Acceleration - Raw - Run 6',  
+        x = 'Time', y = acceleration_cols, figsize = (16,6))
+    head_run6_plot.legend(loc=2, fontsize = 'xx-large')
+
+    # Run 7
+    head_run7_plot = head_mnptd_df.iloc[98000:98500].plot(
+        title = 'Head Experienced Acceleration - Raw - Run 7',  
+        x = 'Time', y = acceleration_cols, figsize = (16,6))
+    head_run7_plot.legend(loc=2, fontsize = 'xx-large')
+    
+except TypeError or NameError:
+    pass
 
