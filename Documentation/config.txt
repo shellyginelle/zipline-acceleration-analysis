@@ -1,8 +1,8 @@
 ; PRODUCT_ID = HAM-IMU
 ;deadband, deadbandtimeout, dwell options act
 ;upon the accelerometer sensor data
-deadband = 0
-DeadBandTimeout = 5
+deadband=0
+DeadBandTimeout=5
 ;dwell=100
 ;set the length of the data file
 samplesperfile = 72000
@@ -25,7 +25,7 @@ compassSampleRate=10
 ; sensor always operates at 200 hz 
 ; but data stream to file can be subsampled to 
 ; rates of 25, 50, 100 and 200 Hz
-mpu_SampleRate = 50
+mpu_SampleRate=50
 ; available accelerometer full scale ranges are 2, 4, 8 and 16g (2g is the
 ; default)
 mpu_accelFsr=16

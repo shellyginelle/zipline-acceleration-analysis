@@ -15,13 +15,10 @@
 #  - Transit duration
 #  - Repeat
 # 5. Display post-processed data as a set of graphs
-#  - Show runs individually
-#  - Show runs compiled with standard deviation (however this may not be the best plot because of the swing/rotation of the user)
-# 
 
 # ### Import Libraries
 
-# In[18]:
+# In[185]:
 
 
 #Imports
@@ -41,7 +38,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-# In[19]:
+# In[186]:
 
 
 #Static Variables
@@ -99,7 +96,7 @@ os.path.exists(bmfp_v4_head)
 #  - Arrival at Brake Mechanism
 # 2. Offloading - Figure out the time it took for you to get back onto the Zip Line of choice
 
-# In[20]:
+# In[187]:
 
 
 '''
@@ -124,7 +121,7 @@ head_raw_df = pd.read_csv(bmfp_v4_head + 'COMBINED_HEAD_DATA.csv',
 #head_raw_df
 
 
-# In[21]:
+# In[188]:
 
 
 '''
@@ -149,7 +146,7 @@ neck_raw_df = pd.read_csv(bmfp_v4_neck + 'COMBINED_NECK_DATA.csv',
 #neck_raw_df
 
 
-# In[22]:
+# In[189]:
 
 
 '''
@@ -174,17 +171,17 @@ shoulder_raw_df = pd.read_csv(bmfp_v4_shoulder + 'COMBINED_SHOULDER_DATA.csv',
 #shoulder_raw_df
 
 
-# In[23]:
+# In[190]:
 
 
 '''
 4. Read all HEART data files
 '''
 heart_raw_dir = os.chdir(bmfp_v4_heart)
-heart_results = pd.DataFrame([], columns=colnames_HAM_IMU)
+heart_results = pd.DataFrame([], columns=colnames_HAM_IMU_ALT)
 
 for counter, file in enumerate(files):
-    heart_df = pd.read_csv(file, skiprows=[0,1,2,3,4,5,6,7,8], sep=',', names=colnames_HAM_IMU, engine='python')
+    heart_df = pd.read_csv(file, skiprows=[0,1,2,3,4,5,6,7,8], sep=',', names=colnames_HAM_IMU_ALT, engine='python')
     #Append the results into one dataframe
     heart_results = heart_results.append(heart_df)
 
@@ -193,13 +190,13 @@ heart_results.to_csv(bmfp_v4_heart + 'COMBINED_HEART_DATA.csv')
 
 #Read combined data, rename columns and print data
 heart_raw_df = pd.read_csv(bmfp_v4_heart + 'COMBINED_HEART_DATA.csv', 
-                 skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+                 skiprows=[0], sep=',', names=colnames_HAM_IMU_ALT, header=None, engine='python')
 
 #print combined dataframe
 #heart_raw_df
 
 
-# In[24]:
+# In[191]:
 
 
 '''
@@ -224,7 +221,7 @@ com_raw_df = pd.read_csv(bmfp_v4_com + 'COMBINED_COM_DATA.csv',
 #com_raw_df
 
 
-# In[25]:
+# In[192]:
 
 
 #Create temp df so we don't alter the raw data values, will need for plots later
@@ -237,7 +234,7 @@ com_raw_temp_df = com_raw_df
 
 # ### Filter Data
 
-# In[26]:
+# In[193]:
 
 
 #Run the aliased data through a post processing butterworth filter, save results as post processed data - pp
@@ -262,7 +259,7 @@ def butter_lowpass_filter(data, cutoff, fs, order=5):
 
 # Filter requirements.
 order = 6
-fs = 50.0       # sample rate, Hz
+fs = 200.0       # sample rate, Hz mpu_SampleRate
 cutoff = 5.0  # desired cutoff frequency of the filter, Hz
 
 # Get the filter coefficients so we can check its frequency response.
@@ -280,7 +277,7 @@ plt.xlabel('Frequency [Hz]')
 plt.grid()
 
 
-# In[27]:
+# In[194]:
 
 
 # Demonstrate the use of the filter.
@@ -305,7 +302,7 @@ plt.subplots_adjust(hspace=0.35)
 plt.show()
 
 
-# In[28]:
+# In[195]:
 
 
 # The data to be filtered is as follows:
@@ -322,7 +319,7 @@ for cols in cols_to_filter:
     com_raw_temp_df[cols] = butter_lowpass_filter(com_raw_temp_df[cols], cutoff, fs, order)
 
 
-# In[29]:
+# In[196]:
 
 
 #Save dataframe into new .csv
@@ -336,11 +333,11 @@ neck_butterflt_df = pd.read_csv(bmfp_v4_neck + 'BUTTERWORTH_FLTR_NECK_DATA.csv',
 
 shoulder_raw_temp_df.to_csv(bmfp_v4_shoulder + 'BUTTERWORTH_FLTR_SHOULDER_DATA.csv')
 shoulder_butterflt_df = pd.read_csv(bmfp_v4_shoulder + 'BUTTERWORTH_FLTR_SHOULDER_DATA.csv', 
-                 skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+                 skiprows=[0], sep=',', names=colnames_HAM_IMU_ALT, header=None, engine='python')
 
 heart_raw_temp_df.to_csv(bmfp_v4_heart + 'BUTTERWORTH_FLTR_HEART_DATA.csv')
 heart_butterflt_df = pd.read_csv(bmfp_v4_heart + 'BUTTERWORTH_FLTR_HEART_DATA.csv', 
-                 skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+                 skiprows=[0], sep=',', names=colnames_HAM_IMU_ALT, header=None, engine='python')
 
 com_raw_temp_df.to_csv(bmfp_v4_com + 'BUTTERWORTH_FLTR_COM_DATA.csv')
 com_butterflt_df = pd.read_csv(bmfp_v4_com + 'BUTTERWORTH_FLTR_COM_DATA.csv', 
@@ -355,7 +352,7 @@ com_butterflt_df = pd.read_csv(bmfp_v4_com + 'BUTTERWORTH_FLTR_COM_DATA.csv',
 # 
 # The Invensesense MPU-9250 reports accelerometer data using a 16-bit value, or 65536 counts. To convert the raw data to “g” units and “degree-seconds”, accelerometer data is divided by 2048 and gyroscope data is divided by 65.536. 
 
-# In[30]:
+# In[197]:
 
 
 #Divide columns Ax, Ay, Az by 2048
@@ -396,7 +393,7 @@ for g_cols in gyroscope_cols:
         com_butterflt_df[g_cols] = com_butterflt_df[g_cols].divide(degree_sec)
 
 
-# In[31]:
+# In[198]:
 
 
 #Save dataframe into new .csv
@@ -410,11 +407,11 @@ neck_mnptd_df = pd.read_csv(bmfp_v4_neck + 'MANIPULATED_NECK_DATA.csv',
 
 shoulder_butterflt_df.to_csv(bmfp_v4_shoulder + 'MANIPULATED_SHOULDER_DATA.csv')
 shoulder_mnptd_df = pd.read_csv(bmfp_v4_shoulder + 'MANIPULATED_SHOULDER_DATA.csv', 
-                 skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+                 skiprows=[0], sep=',', names=colnames_HAM_IMU_ALT, header=None, engine='python')
 
 heart_butterflt_df.to_csv(bmfp_v4_heart + 'MANIPULATED_HEART_DATA.csv')
 heart_mnptd_df = pd.read_csv(bmfp_v4_heart + 'MANIPULATED_HEART_DATA.csv', 
-                 skiprows=[0], sep=',', names=colnames_HAM_IMU, header=None, engine='python')
+                 skiprows=[0], sep=',', names=colnames_HAM_IMU_ALT, header=None, engine='python')
 
 com_butterflt_df.to_csv(bmfp_v4_com + 'MANIPULATED_COM_DATA.csv')
 com_mnptd_df = pd.read_csv(bmfp_v4_com + 'MANIPULATED_COM_DATA.csv', 
@@ -425,23 +422,9 @@ com_mnptd_df = pd.read_csv(bmfp_v4_com + 'MANIPULATED_COM_DATA.csv',
 #com_mnptd_df
 
 
-# #### This part will be added through Tableau Data Visualization
-# 
-# ### Plot Data
-# 1. Acceleration
-# 2. G-Force
-# 3. Quaternion
-# 
-# ### Data Analysis
-# 
-# #### Acceleration & Gyroscope
-# 1. MAX vs MIN experienced
-# 2. Dependent on the MAX and MIN recorded, what was the longest duration of that acceleration experienced?
-# 
-# #### Quarternion
-# 1. What was the position of the test participant? This will should be mapped to the acceleration experienced.
+# ### Plots and Analysis
 
-# In[40]:
+# In[199]:
 
 
 '''
@@ -472,7 +455,7 @@ video_visit4_df = pd.read_csv(video_visit4_data, skiprows=[0], sep=',',
 video_visit4_df
 
 
-# In[74]:
+# In[200]:
 
 
 def calculate_row_count(value_to_convert):
@@ -517,58 +500,475 @@ run6_end = run4_start + 50
 run7_start = transit6_duration + run7_duration
 run7_end = run4_start + 50
 
-print(run1_start, run1_end)
+
+# In[201]:
 
 
-# In[271]:
+head_all_raw_plot = head_results.plot(
+    title = 'Head Experienced Acceleration - Raw',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+head_all_raw_plot.legend(loc=2, fontsize = 'xx-large')
+
+head_all_fltrd_plot = head_mnptd_df.plot(
+    title = 'Head Experienced Acceleration - Filtered',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+head_all_fltrd_plot.legend(loc=2, fontsize = 'xx-large')
 
 
-#3000*4.5 = 13500
-#transit to first run = head_mnptd_df.iloc[3370:4800] ?
+# In[202]:
 
-try:
-    # Run 1
-    head_run1_plot = head_mnptd_df.iloc[6000:6300].plot(
-        title = 'Head Experienced Acceleration - Raw - Run 1',  
-        x = 'Time', y = acceleration_cols, figsize = (16,6))
-    head_run1_plot.legend(loc=2, fontsize = 'xx-large')
-    
-    # Run 2
-    head_run2_plot = head_mnptd_df.iloc[22050:22350].plot(
-        title = 'Head Experienced Acceleration - Raw - Run 2',  
-        x = 'Time', y = acceleration_cols, figsize = (16,6))
-    head_run2_plot.legend(loc=2, fontsize = 'xx-large')
-    
-    # Run 3
-    head_run3_plot = head_mnptd_df.iloc[35950:36250].plot(
-        title = 'Head Experienced Acceleration - Raw - Run 3',  
-        x = 'Time', y = acceleration_cols, figsize = (16,6))
-    head_run3_plot.legend(loc=2, fontsize = 'xx-large')
 
-    # Run 4
-    head_run4_plot = head_mnptd_df.iloc[52350:52650].plot(
-        title = 'Head Experienced Acceleration - Raw - Run 4',  
-        x = 'Time', y = acceleration_cols, figsize = (16,6))
-    head_run4_plot.legend(loc=2, fontsize = 'xx-large')
+head_all_fltrd1_plot = head_mnptd_df.iloc[6000:8000].plot(
+    title = 'Head Experienced Acceleration - Filtered - Interval Example',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+head_all_fltrd_plot.legend(loc=2, fontsize = 'xx-large')
 
-    # Run 5
-    head_run5_plot = head_mnptd_df.iloc[67850:68150].plot(
-        title = 'Head Experienced Acceleration - Raw - Run 5',  
-        x = 'Time', y = acceleration_cols, figsize = (16,6))
-    head_run5_plot.legend(loc=2, fontsize = 'xx-large')
-    
-    # Run 6
-    head_run6_plot = head_mnptd_df.iloc[81500:81800].plot(
-        title = 'Head Experienced Acceleration - Raw - Run 6',  
-        x = 'Time', y = acceleration_cols, figsize = (16,6))
-    head_run6_plot.legend(loc=2, fontsize = 'xx-large')
+#Usually 
+head_all_fltrd_plot = head_mnptd_df.iloc[10000:22000].plot(
+    title = 'Head Experienced Acceleration - Filtered - Interval Example',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+head_all_fltrd_plot.legend(loc=2, fontsize = 'xx-large')
 
-    # Run 7
-    head_run7_plot = head_mnptd_df.iloc[98000:98500].plot(
-        title = 'Head Experienced Acceleration - Raw - Run 7',  
-        x = 'Time', y = acceleration_cols, figsize = (16,6))
-    head_run7_plot.legend(loc=2, fontsize = 'xx-large')
-    
-except TypeError or NameError:
-    pass
+
+# In[203]:
+
+
+# Run 1
+head_all_fltrd_plot = head_mnptd_df.iloc[6900:7400].plot(
+    title = 'Head Experienced Acceleration - Filtered - Run 1 - Backwards Z- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+head_all_fltrd_plot.legend(loc=2, fontsize = 'xx-large')
+
+# Run 2
+head_run2_plot = head_mnptd_df.iloc[17700:18200].plot(
+    title = 'Head Experienced Acceleration - Filtered - Run 2 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+head_run2_plot.legend(loc=2, fontsize = 'xx-large')
+
+# Run 3
+head_run3_plot = head_mnptd_df.iloc[23050:23550].plot(
+    title = 'Head Experienced Acceleration - Filtered - Run 3 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+head_run3_plot.legend(loc=2, fontsize = 'xx-large')
+
+# Run 4
+head_run4_plot = head_mnptd_df.iloc[48500:49000].plot(
+    title = 'Head Experienced Acceleration - Filtered - Run 4 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+head_run4_plot.legend(loc=2, fontsize = 'xx-large')
+
+# Run 5
+head_run5_plot = head_mnptd_df.iloc[67850:68350].plot(
+    title = 'Head Experienced Acceleration - Filtered - Run 5 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+head_run5_plot.legend(loc=2, fontsize = 'xx-large')
+
+# Run 6
+head_run6_plot = head_mnptd_df.iloc[78000:78500].plot(
+    title = 'Head Experienced Acceleration - Filtered - Run 6 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+head_run6_plot.legend(loc=2, fontsize = 'xx-large')
+
+# Run 7
+head_run7_plot = head_mnptd_df.iloc[98150:98650].plot(
+    title = 'Head Experienced Acceleration - Filtered - Run 7 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+head_run7_plot.legend(loc=2, fontsize = 'xx-large')
+
+
+# In[204]:
+
+
+# Run 1
+neck_all_fltrd_plot = neck_mnptd_df.iloc[7600:8100].plot(
+    title = 'Neck Experienced Acceleration - Filtered - Run 1 - Backwards Z- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+neck_all_fltrd_plot.legend(loc=2, fontsize = 'xx-large')
+
+# Run 2
+neck_run2_plot = neck_mnptd_df.iloc[18400:18900].plot(
+    title = 'Neck Experienced Acceleration - Filtered - Run 2 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+neck_run2_plot.legend(loc=2, fontsize = 'xx-large')
+
+# Run 3
+neck_run3_plot = neck_mnptd_df.iloc[23800:24300].plot(
+    title = 'Neck Experienced Acceleration - Filtered - Run 3 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+neck_run3_plot.legend(loc=2, fontsize = 'xx-large')
+
+# Run 4
+neck_run4_plot = neck_mnptd_df.iloc[49250:49750].plot(
+    title = 'Neck Experienced Acceleration - Filtered - Run 4 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+neck_run4_plot.legend(loc=2, fontsize = 'xx-large')
+
+# Run 5
+neck_run5_plot = neck_mnptd_df.iloc[68600:69100].plot(
+    title = 'Neck Experienced Acceleration - Filtered - Run 5 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+neck_run5_plot.legend(loc=2, fontsize = 'xx-large')
+
+# Run 6
+neck_run6_plot = neck_mnptd_df.iloc[78750:79250].plot(
+    title = 'Neck Experienced Acceleration - Filtered - Run 6 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+neck_run6_plot.legend(loc=2, fontsize = 'xx-large')
+
+# Run 7
+neck_run7_plot = neck_mnptd_df.iloc[98850:99350].plot(
+    title = 'Neck Experienced Acceleration - Filtered - Run 7 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+neck_run7_plot.legend(loc=2, fontsize = 'xx-large')
+
+
+# In[205]:
+
+
+# Run 1
+shoulder_all_fltrd_plot = shoulder_mnptd_df.iloc[9850:10350].plot(
+    title = 'Shoulder Experienced Acceleration - Filtered - Run 1 - Backwards Z- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+shoulder_all_fltrd_plot.legend(loc=2, fontsize = 'xx-large')
+
+# Run 2
+shoulder_run2_plot = shoulder_mnptd_df.iloc[20650:21150].plot(
+    title = 'Shoulder Experienced Acceleration - Filtered - Run 2 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+shoulder_run2_plot.legend(loc=2, fontsize = 'xx-large')
+
+# Run 3
+shoulder_run3_plot = shoulder_mnptd_df.iloc[26050:26550].plot(
+    title = 'Shoulder Experienced Acceleration - Filtered - Run 3 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+shoulder_run3_plot.legend(loc=2, fontsize = 'xx-large')
+
+# Run 4
+shoulder_run4_plot = shoulder_mnptd_df.iloc[51500:52000].plot(
+    title = 'Shoulder Experienced Acceleration - Filtered - Run 4 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+shoulder_run4_plot.legend(loc=2, fontsize = 'xx-large')
+
+# Run 5
+shoulder_run5_plot = shoulder_mnptd_df.iloc[70800:71500].plot(
+    title = 'Shoulder Experienced Acceleration - Filtered - Run 5 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+shoulder_run5_plot.legend(loc=2, fontsize = 'xx-large')
+
+# Run 6
+shoulder_run6_plot = shoulder_mnptd_df.iloc[81000:81500].plot(
+    title = 'Shoulder Experienced Acceleration - Filtered - Run 6 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+shoulder_run6_plot.legend(loc=2, fontsize = 'xx-large')
+
+# Run 7
+shoulder_run7_plot = shoulder_mnptd_df.iloc[101100:101600].plot(
+    title = 'Shoulder Experienced Acceleration - Filtered - Run 7 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+shoulder_run7_plot.legend(loc=2, fontsize = 'xx-large')
+
+
+# In[206]:
+
+
+# Run 1
+heart_all_fltrd_plot = heart_mnptd_df.iloc[9850:10350].plot(
+    title = 'Heart Experienced Acceleration - Filtered - Run 1 - Backwards Z- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+heart_all_fltrd_plot.legend(loc=2, fontsize = 'xx-large')
+
+# Run 2
+heart_run2_plot = heart_mnptd_df.iloc[20650:21150].plot(
+    title = 'Heart Experienced Acceleration - Filtered - Run 2 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+heart_run2_plot.legend(loc=2, fontsize = 'xx-large')
+
+# Run 3
+heart_run3_plot = heart_mnptd_df.iloc[26050:26550].plot(
+    title = 'Heart Experienced Acceleration - Filtered - Run 3 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+heart_run3_plot.legend(loc=2, fontsize = 'xx-large')
+
+# Run 4
+heart_run4_plot = heart_mnptd_df.iloc[51500:52000].plot(
+    title = 'Heart Experienced Acceleration - Filtered - Run 4 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+heart_run4_plot.legend(loc=2, fontsize = 'xx-large')
+
+# Run 5
+heart_run5_plot = heart_mnptd_df.iloc[70800:71500].plot(
+    title = 'Heart Experienced Acceleration - Filtered - Run 5 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+heart_run5_plot.legend(loc=2, fontsize = 'xx-large')
+
+# Run 6
+heart_run6_plot = heart_mnptd_df.iloc[81000:81500].plot(
+    title = 'Heart Experienced Acceleration - Filtered - Run 6 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+heart_run6_plot.legend(loc=2, fontsize = 'xx-large')
+
+# Run 7
+heart_run7_plot = heart_mnptd_df.iloc[101100:101600].plot(
+    title = 'Heart Experienced Acceleration - Filtered - Run 7 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+heart_run7_plot.legend(loc=2, fontsize = 'xx-large')
+
+
+# In[207]:
+
+
+# Run 1
+com_all_fltrd_plot = com_mnptd_df.iloc[7400:7900].plot(
+    title = 'COM Experienced Acceleration - Filtered - Run 1 - Backwards Z- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+com_all_fltrd_plot.legend(loc=2, fontsize = 'xx-large')
+
+# Run 2
+com_run2_plot = com_mnptd_df.iloc[18200:18700].plot(
+    title = 'COM Experienced Acceleration - Filtered - Run 2 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+com_run2_plot.legend(loc=2, fontsize = 'xx-large')
+
+# Run 3
+com_run3_plot = com_mnptd_df.iloc[23600:24100].plot(
+    title = 'COM Experienced Acceleration - Filtered - Run 3 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+com_run3_plot.legend(loc=2, fontsize = 'xx-large')
+
+# Run 4
+com_run4_plot = com_mnptd_df.iloc[49050:49550].plot(
+    title = 'COM Experienced Acceleration - Filtered - Run 4 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+com_run4_plot.legend(loc=2, fontsize = 'xx-large')
+
+# Run 5
+com_run5_plot = com_mnptd_df.iloc[68300:68800].plot(
+    title = 'COM Experienced Acceleration - Filtered - Run 5 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+com_run5_plot.legend(loc=2, fontsize = 'xx-large')
+
+# Run 6
+com_run6_plot = com_mnptd_df.iloc[78550:79050].plot(
+    title = 'COM Experienced Acceleration - Filtered - Run 6 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+com_run6_plot.legend(loc=2, fontsize = 'xx-large')
+
+# Run 7
+com_run7_plot = com_mnptd_df.iloc[98700:99200].plot(
+    title = 'COM Experienced Acceleration - Filtered - Run 7 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+com_run7_plot.legend(loc=2, fontsize = 'xx-large')
+
+
+# ### Plots specific to each run, showcasing all accelerometer locations
+
+# In[208]:
+
+
+#Run 1
+
+head_all_fltrd_plot = head_mnptd_df.iloc[6900:7400].plot(
+    title = 'Head Experienced Acceleration - Filtered - Run 1 - Backwards Z- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+head_all_fltrd_plot.legend(loc=2, fontsize = 'xx-large')
+
+neck_all_fltrd_plot = neck_mnptd_df.iloc[7600:8100].plot(
+    title = 'Neck Experienced Acceleration - Filtered - Run 1 - Backwards Z- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+neck_all_fltrd_plot.legend(loc=2, fontsize = 'xx-large')
+
+shoulder_all_fltrd_plot = shoulder_mnptd_df.iloc[9850:10350].plot(
+    title = 'Shoulder Experienced Acceleration - Filtered - Run 1 - Backwards Z- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+shoulder_all_fltrd_plot.legend(loc=2, fontsize = 'xx-large')
+
+heart_all_fltrd_plot = heart_mnptd_df.iloc[9850:10350].plot(
+    title = 'Heart Experienced Acceleration - Filtered - Run 1 - Backwards Z- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+heart_all_fltrd_plot.legend(loc=2, fontsize = 'xx-large')
+
+com_all_fltrd_plot = com_mnptd_df.iloc[7400:7900].plot(
+    title = 'COM Experienced Acceleration - Filtered - Run 1 - Backwards Z- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+com_all_fltrd_plot.legend(loc=2, fontsize = 'xx-large')
+
+
+# In[209]:
+
+
+# Run 2
+head_run2_plot = head_mnptd_df.iloc[17700:18200].plot(
+    title = 'Head Experienced Acceleration - Filtered - Run 2 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+head_run2_plot.legend(loc=2, fontsize = 'xx-large')
+
+neck_run2_plot = neck_mnptd_df.iloc[18400:18900].plot(
+    title = 'Neck Experienced Acceleration - Filtered - Run 2 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+neck_run2_plot.legend(loc=2, fontsize = 'xx-large')
+
+shoulder_run2_plot = shoulder_mnptd_df.iloc[20650:21150].plot(
+    title = 'Shoulder Experienced Acceleration - Filtered - Run 2 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+shoulder_run2_plot.legend(loc=2, fontsize = 'xx-large')
+
+heart_run2_plot = heart_mnptd_df.iloc[20650:21150].plot(
+    title = 'Heart Experienced Acceleration - Filtered - Run 2 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+heart_run2_plot.legend(loc=2, fontsize = 'xx-large')
+
+com_run2_plot = com_mnptd_df.iloc[18200:18700].plot(
+    title = 'COM Experienced Acceleration - Filtered - Run 2 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+com_run2_plot.legend(loc=2, fontsize = 'xx-large')
+
+
+# In[210]:
+
+
+# Run 3
+head_run3_plot = head_mnptd_df.iloc[23050:23550].plot(
+    title = 'Head Experienced Acceleration - Filtered - Run 3 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+head_run3_plot.legend(loc=2, fontsize = 'xx-large')
+
+neck_run3_plot = neck_mnptd_df.iloc[23800:24300].plot(
+    title = 'Neck Experienced Acceleration - Filtered - Run 3 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+neck_run3_plot.legend(loc=2, fontsize = 'xx-large')
+
+shoulder_run3_plot = shoulder_mnptd_df.iloc[26050:26550].plot(
+    title = 'Shoulder Experienced Acceleration - Filtered - Run 3 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+shoulder_run3_plot.legend(loc=2, fontsize = 'xx-large')
+
+heart_run3_plot = heart_mnptd_df.iloc[26050:26550].plot(
+    title = 'Heart Experienced Acceleration - Filtered - Run 3 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+heart_run3_plot.legend(loc=2, fontsize = 'xx-large')
+
+com_run3_plot = com_mnptd_df.iloc[23600:24100].plot(
+    title = 'COM Experienced Acceleration - Filtered - Run 3 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+com_run3_plot.legend(loc=2, fontsize = 'xx-large')
+
+
+# In[211]:
+
+
+# Run 4
+head_run4_plot = head_mnptd_df.iloc[48500:49000].plot(
+    title = 'Head Experienced Acceleration - Filtered - Run 4 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+head_run4_plot.legend(loc=2, fontsize = 'xx-large')
+
+neck_run4_plot = neck_mnptd_df.iloc[49250:49750].plot(
+    title = 'Neck Experienced Acceleration - Filtered - Run 4 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+neck_run4_plot.legend(loc=2, fontsize = 'xx-large')
+
+shoulder_run4_plot = shoulder_mnptd_df.iloc[51500:52000].plot(
+    title = 'Shoulder Experienced Acceleration - Filtered - Run 4 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+shoulder_run4_plot.legend(loc=2, fontsize = 'xx-large')
+
+heart_run4_plot = heart_mnptd_df.iloc[51500:52000].plot(
+    title = 'Heart Experienced Acceleration - Filtered - Run 4 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+heart_run4_plot.legend(loc=2, fontsize = 'xx-large')
+
+com_run4_plot = com_mnptd_df.iloc[49050:49550].plot(
+    title = 'COM Experienced Acceleration - Filtered - Run 4 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+com_run4_plot.legend(loc=2, fontsize = 'xx-large')
+
+
+# In[212]:
+
+
+# Run 5
+head_run5_plot = head_mnptd_df.iloc[67850:68350].plot(
+    title = 'Head Experienced Acceleration - Filtered - Run 5 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+head_run5_plot.legend(loc=2, fontsize = 'xx-large')
+
+neck_run5_plot = neck_mnptd_df.iloc[68600:69100].plot(
+    title = 'Neck Experienced Acceleration - Filtered - Run 5 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+neck_run5_plot.legend(loc=2, fontsize = 'xx-large')
+
+shoulder_run5_plot = shoulder_mnptd_df.iloc[70800:71500].plot(
+    title = 'Shoulder Experienced Acceleration - Filtered - Run 5 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+shoulder_run5_plot.legend(loc=2, fontsize = 'xx-large')
+
+heart_run5_plot = heart_mnptd_df.iloc[70800:71500].plot(
+    title = 'Heart Experienced Acceleration - Filtered - Run 5 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+heart_run5_plot.legend(loc=2, fontsize = 'xx-large')
+
+com_run5_plot = com_mnptd_df.iloc[68300:68800].plot(
+    title = 'COM Experienced Acceleration - Filtered - Run 5 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+com_run5_plot.legend(loc=2, fontsize = 'xx-large')
+
+
+# In[213]:
+
+
+# Run 6
+head_run6_plot = head_mnptd_df.iloc[78000:78500].plot(
+    title = 'Head Experienced Acceleration - Filtered - Run 6 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+head_run6_plot.legend(loc=2, fontsize = 'xx-large')
+
+neck_run6_plot = neck_mnptd_df.iloc[78750:79250].plot(
+    title = 'Neck Experienced Acceleration - Filtered - Run 6 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+neck_run6_plot.legend(loc=2, fontsize = 'xx-large')
+
+shoulder_run6_plot = shoulder_mnptd_df.iloc[81000:81500].plot(
+    title = 'Shoulder Experienced Acceleration - Filtered - Run 6 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+shoulder_run6_plot.legend(loc=2, fontsize = 'xx-large')
+
+heart_run6_plot = heart_mnptd_df.iloc[81000:81500].plot(
+    title = 'Heart Experienced Acceleration - Filtered - Run 6 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+heart_run6_plot.legend(loc=2, fontsize = 'xx-large')
+
+com_run6_plot = com_mnptd_df.iloc[78550:79050].plot(
+    title = 'COM Experienced Acceleration - Filtered - Run 6 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+com_run6_plot.legend(loc=2, fontsize = 'xx-large')
+
+
+# In[214]:
+
+
+# Run 7
+head_run7_plot = head_mnptd_df.iloc[98150:98650].plot(
+    title = 'Head Experienced Acceleration - Filtered - Run 7 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+head_run7_plot.legend(loc=2, fontsize = 'xx-large')
+
+neck_run7_plot = neck_mnptd_df.iloc[98850:99350].plot(
+    title = 'Neck Experienced Acceleration - Filtered - Run 7 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+neck_run7_plot.legend(loc=2, fontsize = 'xx-large')
+
+shoulder_run7_plot = shoulder_mnptd_df.iloc[101100:101600].plot(
+    title = 'Shoulder Experienced Acceleration - Filtered - Run 7 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+shoulder_run7_plot.legend(loc=2, fontsize = 'xx-large')
+
+heart_run7_plot = heart_mnptd_df.iloc[101100:101600].plot(
+    title = 'Heart Experienced Acceleration - Filtered - Run 7 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+heart_run7_plot.legend(loc=2, fontsize = 'xx-large')
+
+com_run7_plot = com_mnptd_df.iloc[98700:99200].plot(
+    title = 'COM Experienced Acceleration - Filtered - Run 7 - Left Side X- Axis',  
+    x = 'Time', y = acceleration_cols, figsize = (16,6))
+com_run7_plot.legend(loc=2, fontsize = 'xx-large')
 
